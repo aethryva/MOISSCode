@@ -1,4 +1,4 @@
-"""Medical I/O — device and lab interface for MOISSCode."""
+﻿"""Medical I/O  - device and lab interface for MOISSCode."""
 
 from typing import Dict, Any, Callable
 
@@ -53,7 +53,7 @@ class LabInterface:
 
 
 class MedIO:
-    """Medical I/O — device and lab interface for MOISSCode."""
+    """Medical I/O  - device and lab interface for MOISSCode."""
     devices = DeviceManager()
     lab = LabInterface()
 

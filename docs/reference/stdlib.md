@@ -1,4 +1,4 @@
-# Medical Library Reference
+﻿# Medical Library Reference
 
 The MOISSCode Medical Library (`med`) provides the building blocks for medical applications. All 12 modules are accessible via the `med.` prefix.
 
@@ -6,7 +6,7 @@ The MOISSCode Medical Library (`med`) provides the building blocks for medical a
 
 ## Core Modules
 
-### `med.scores` — Clinical Scoring
+### `med.scores`  - Clinical Scoring
 Standardized medical calculators.
 
 #### `qsofa(p: Patient) -> int`
@@ -19,7 +19,7 @@ if med.scores.qsofa(p) >= 2 {
 }
 ```
 
-### `med.io` — Input/Output
+### `med.io`  - Input/Output
 The bridge between code and the physical world.
 
 #### `connect_device(id: str, type: str)`
@@ -40,7 +40,7 @@ Fetches the latest lab result for the patient.
 let lactate = med.io.get_lab("Lactate");
 ```
 
-### `med.finance` — Financial Operations
+### `med.finance`  - Financial Operations
 Automated billing and cost tracking.
 
 #### `bill(code: str, description: str)`
@@ -49,7 +49,7 @@ Logs a billable event (CPT/ICD-10) to the ledger.
 med.finance.bill("99291", "Critical Care - First 74 mins");
 ```
 
-### `med.research` — Data Privacy
+### `med.research`  - Data Privacy
 Tools for ethical, HIPAA-compliant data handling.
 
 #### `deidentify(p: Patient) -> Dictionary`
@@ -62,26 +62,26 @@ med.research.log_to_datalake(med.research.deidentify(p));
 
 ## Clinical Modules
 
-### `med.pk` — Pharmacokinetics
+### `med.pk`  - Pharmacokinetics
 Drug profiles, dosing, plasma curves, and interaction checks.
 
-### `med.db` — Database
+### `med.db`  - Database
 SQLite-backed patient storage, audit trails, and alert logging.
 
-### `med.biochem` — Biochemistry
+### `med.biochem`  - Biochemistry
 Enzyme kinetics (Michaelis-Menten), metabolic pathways, anion gap, osmolality.
 
-### `med.lab` — Laboratory
+### `med.lab`  - Laboratory
 50+ lab tests across 10 panels with reference ranges. eGFR, ABG interpretation.
 
-### `med.micro` — Microbiology
+### `med.micro`  - Microbiology
 10 organisms, MIC breakpoints (CLSI 2024), empiric therapy, Gram stain DDx.
 
-### `med.genomics` — Pharmacogenomics
+### `med.genomics`  - Pharmacogenomics
 CYP450 variants, dosing guidance (CPIC), drug-gene interactions, sequence tools.
 
-### `med.epi` — Epidemiology
+### `med.epi`  - Epidemiology
 SIR/SEIR models, R₀ calculation, herd immunity, 11 disease profiles.
 
-### `med.nutrition` — Clinical Nutrition
+### `med.nutrition`  - Clinical Nutrition
 BMI, BMR (Harris-Benedict, Mifflin-St Jeor), ICU targets, TPN formulation.

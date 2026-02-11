@@ -1,5 +1,5 @@
-"""
-med.db — Database Layer for MOISSCode
+﻿"""
+med.db  - Database Layer for MOISSCode
 Provides persistent storage for patients, protocol results, and audit trails.
 Uses SQLite for zero-config local storage. Production systems can swap to PostgreSQL.
 """

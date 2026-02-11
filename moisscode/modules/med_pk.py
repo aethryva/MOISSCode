@@ -1,5 +1,5 @@
-"""
-med.pk — Pharmacokinetic Engine for MOISSCode
+﻿"""
+med.pk  - Pharmacokinetic Engine for MOISSCode
 Provides ADME profiles, drug interaction checking, and weight-based dosing.
 """
 
@@ -216,6 +216,188 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         metabolism="hepatic/RES",
         excretion="renal"
     ),
+
+    # ─── Analgesics / Sedatives ─────────────────────────────
+    "Morphine": DrugProfile(
+        name="Morphine",
+        category="analgesic",
+        bioavailability=1.0,
+        onset_min=5.0,
+        peak_min=20.0,
+        half_life_min=180.0,    # 3 hours
+        duration_min=300.0,     # 5 hours
+        standard_dose=0.1,
+        dose_unit="mg/kg",
+        max_dose=0.2,
+        min_dose=0.05,
+        contraindications=["respiratory_depression", "paralytic_ileus"],
+        interactions={
+            "Benzodiazepines": "SEVERE",
+            "MAO_inhibitors": "SEVERE",
+            "Propofol": "MAJOR",
+        },
+        route="IV",
+        metabolism="hepatic",
+        excretion="renal"
+    ),
+
+    "Fentanyl": DrugProfile(
+        name="Fentanyl",
+        category="analgesic",
+        bioavailability=1.0,
+        onset_min=1.0,
+        peak_min=5.0,
+        half_life_min=219.0,    # 3.7 hours
+        duration_min=60.0,
+        standard_dose=1.0,
+        dose_unit="mcg/kg",
+        max_dose=5.0,
+        min_dose=0.5,
+        contraindications=["respiratory_depression", "MAO_inhibitor_use"],
+        interactions={
+            "Benzodiazepines": "SEVERE",
+            "Propofol": "MODERATE",
+            "MAO_inhibitors": "SEVERE",
+        },
+        route="IV",
+        metabolism="hepatic_CYP3A4",
+        excretion="renal"
+    ),
+
+    "Midazolam": DrugProfile(
+        name="Midazolam",
+        category="sedative",
+        bioavailability=1.0,
+        onset_min=2.0,
+        peak_min=5.0,
+        half_life_min=120.0,    # 2 hours
+        duration_min=120.0,
+        standard_dose=0.05,
+        dose_unit="mg/kg",
+        max_dose=0.1,
+        min_dose=0.02,
+        contraindications=["acute_angle_glaucoma", "myasthenia_gravis"],
+        interactions={
+            "Fentanyl": "MAJOR",
+            "Propofol": "MODERATE",
+            "Ketoconazole": "MAJOR",
+        },
+        route="IV",
+        metabolism="hepatic_CYP3A4",
+        excretion="renal"
+    ),
+
+    "Dexmedetomidine": DrugProfile(
+        name="Dexmedetomidine",
+        category="sedative",
+        bioavailability=1.0,
+        onset_min=15.0,
+        peak_min=60.0,
+        half_life_min=120.0,    # 2 hours
+        duration_min=240.0,
+        standard_dose=0.5,
+        dose_unit="mcg/kg/hr",
+        max_dose=1.5,
+        min_dose=0.2,
+        contraindications=["heart_block", "severe_bradycardia"],
+        interactions={
+            "Beta_blockers": "MAJOR",
+            "Digoxin": "MODERATE",
+        },
+        route="IV",
+        metabolism="hepatic",
+        excretion="renal"
+    ),
+
+    "Ketamine": DrugProfile(
+        name="Ketamine",
+        category="anesthetic",
+        bioavailability=1.0,
+        onset_min=1.0,
+        peak_min=5.0,
+        half_life_min=150.0,    # 2.5 hours
+        duration_min=25.0,
+        standard_dose=1.5,
+        dose_unit="mg/kg",
+        max_dose=4.5,
+        min_dose=0.5,
+        contraindications=["severe_hypertension", "eclampsia", "raised_ICP"],
+        interactions={
+            "Theophylline": "MAJOR",
+            "Thyroid_hormones": "MODERATE",
+        },
+        route="IV",
+        metabolism="hepatic_CYP3A4",
+        excretion="renal"
+    ),
+
+    # ─── Common Medications ────────────────────────────────
+    "Amoxicillin": DrugProfile(
+        name="Amoxicillin",
+        category="antibiotic",
+        bioavailability=0.95,
+        onset_min=30.0,
+        peak_min=120.0,
+        half_life_min=60.0,     # 1 hour
+        duration_min=480.0,     # 8 hours
+        standard_dose=500.0,
+        dose_unit="mg",
+        max_dose=3000.0,
+        min_dose=250.0,
+        contraindications=["penicillin_allergy"],
+        interactions={
+            "Methotrexate": "MAJOR",
+            "Warfarin": "MODERATE",
+        },
+        route="PO",
+        metabolism="hepatic",
+        excretion="renal"
+    ),
+
+    "Metformin": DrugProfile(
+        name="Metformin",
+        category="antidiabetic",
+        bioavailability=0.55,
+        onset_min=60.0,
+        peak_min=150.0,
+        half_life_min=390.0,    # 6.5 hours
+        duration_min=720.0,     # 12 hours
+        standard_dose=500.0,
+        dose_unit="mg",
+        max_dose=2550.0,
+        min_dose=500.0,
+        contraindications=["renal_failure_eGFR_below_30", "metabolic_acidosis"],
+        interactions={
+            "Contrast_dye": "MAJOR",
+            "Alcohol": "MODERATE",
+        },
+        renal_adjust=True,
+        route="PO",
+        metabolism="none",
+        excretion="renal"
+    ),
+
+    "Insulin_Regular": DrugProfile(
+        name="Insulin_Regular",
+        category="antidiabetic",
+        bioavailability=1.0,
+        onset_min=15.0,
+        peak_min=60.0,
+        half_life_min=60.0,     # 1 hour
+        duration_min=360.0,     # 6 hours
+        standard_dose=0.1,
+        dose_unit="units/kg",
+        max_dose=0.3,
+        min_dose=0.05,
+        contraindications=["hypoglycemia"],
+        interactions={
+            "Beta_blockers": "MODERATE",
+            "Thiazides": "MODERATE",
+        },
+        route="IV",
+        metabolism="hepatic/renal",
+        excretion="renal"
+    ),
 }
 
 
@@ -223,8 +405,48 @@ class PharmacokineticEngine:
     """Full PK/PD engine for MOISSCode."""
 
     def __init__(self):
-        self.drugs = DRUG_DATABASE
+        self.drugs = dict(DRUG_DATABASE)  # Copy so user registrations don't mutate global
         self.active_drugs: Dict[str, Dict] = {}  # Currently administered drugs
+
+    # ─── Drug Registry ─────────────────────────────────────────
+    def register_drug(self, profile: DrugProfile):
+        """Register a custom drug profile.
+
+        Allows developers to extend the built-in drug database with
+        any drug. The profile must be a DrugProfile dataclass instance.
+
+        Example::
+
+            pk = PharmacokineticEngine()
+            pk.register_drug(DrugProfile(
+                name="Remdesivir",
+                category="antiviral",
+                bioavailability=1.0,
+                onset_min=30.0,
+                peak_min=120.0,
+                half_life_min=1500.0,
+                duration_min=1440.0,
+                standard_dose=200.0,
+                dose_unit="mg",
+                max_dose=200.0,
+                min_dose=100.0,
+            ))
+        """
+        if not isinstance(profile, DrugProfile):
+            raise TypeError(f"Expected DrugProfile, got {type(profile).__name__}")
+        self.drugs[profile.name] = profile
+        print(f"[PK] Registered drug: {profile.name} ({profile.category})")
+
+    def unregister_drug(self, drug_name: str) -> bool:
+        """Remove a drug from the registry. Returns True if removed."""
+        if drug_name in self.drugs:
+            del self.drugs[drug_name]
+            return True
+        return False
+
+    def list_categories(self) -> List[str]:
+        """List all unique drug categories."""
+        return list(set(d.category for d in self.drugs.values()))
 
     # ─── Drug Lookup ───────────────────────────────────────────
     def get_profile(self, drug_name: str) -> Optional[DrugProfile]:
@@ -412,7 +634,7 @@ if __name__ == "__main__":
     print("=== Available Drugs ===")
     for name in pk.list_drugs():
         p = pk.get_profile(name)
-        print(f"  {name} ({p.category}) — onset: {p.onset_min}min, t½: {p.half_life_min}min")
+        print(f"  {name} ({p.category})  - onset: {p.onset_min}min, t½: {p.half_life_min}min")
 
     print("\n=== Weight-Based Dosing ===")
     pk.calculate_dose("Norepinephrine", weight_kg=70)
@@ -430,4 +652,4 @@ if __name__ == "__main__":
 
     print("\n=== Contraindication Check ===")
     result = pk.check_contraindications("Heparin", ["active_bleeding", "diabetes"])
-    print(f"  Contraindicated: {result['contraindicated']} — Reasons: {result['reasons']}")
+    print(f"  Contraindicated: {result['contraindicated']}  - Reasons: {result['reasons']}")

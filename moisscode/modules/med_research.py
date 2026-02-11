@@ -1,4 +1,4 @@
-"""Medical Research — HIPAA-compliant data privacy tools for MOISSCode."""
+﻿"""Medical Research  - HIPAA-compliant data privacy tools for MOISSCode."""
 
 import hashlib
 import datetime

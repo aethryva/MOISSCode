@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="www/static/img/moisscode_logo.png" alt="MOISSCode" width="360" />
   <br/>
   <strong>Multi Organ Intervention State Space Code</strong>
@@ -55,13 +55,13 @@ pip install -e .
 ### Run a protocol file
 
 ```bash
-moiss run examples/phase3_demo.moiss -v
+moiss run examples/sepsis_workup.moiss -v
 ```
 
 ### Validate syntax without executing
 
 ```bash
-moiss validate examples/phase3_demo.moiss
+moiss validate examples/sepsis_workup.moiss
 ```
 
 ### Interactive REPL
@@ -91,7 +91,7 @@ parser = MOISSCodeParser(tokens)
 program = parser.parse_program()
 
 interp = MOISSCodeInterpreter()
-# Inject a real patient (optional — defaults are used otherwise)
+# Inject a real patient (optional  - defaults are used otherwise)
 interp.scope['p'] = {
     'type': 'Patient',
     'value': Patient(bp=85, hr=110, rr=24, temp=38.5, spo2=94,
@@ -134,18 +134,18 @@ moiss version                  Print version
 
 ## Language Features
 
-- **Protocols** — `protocol Name { ... }`
-- **Patient input** — `input: Patient p;`
-- **Variables** — `let x = expression;`
-- **Conditionals** — `if condition { ... } else { ... }`
-- **Loops** — `while condition { ... }` and `for item in list { ... }`
-- **Custom types** — `type Bacteria { name: str; mic: float; }`
-- **Functions** — `function calc(a, b) { return a + b; }`
-- **Lists** — `let drugs = ["A", "B", "C"];`
-- **Alerts** — `alert "message" severity: critical;`
-- **Assessments** — `assess p for sepsis;`
-- **Drug admin** — `administer Drug dose: 0.1 mcg/kg/min;`
-- **Tracking** — `track p.lactate using KAE;`
+- **Protocols**  - `protocol Name { ... }`
+- **Patient input**  - `input: Patient p;`
+- **Variables**  - `let x = expression;`
+- **Conditionals**  - `if condition { ... } else { ... }`
+- **Loops**  - `while condition { ... }` and `for item in list { ... }`
+- **Custom types**  - `type Bacteria { name: str; mic: float; }`
+- **Functions**  - `function calc(a, b) { return a + b; }`
+- **Lists**  - `let drugs = ["A", "B", "C"];`
+- **Alerts**  - `alert "message" severity: critical;`
+- **Assessments**  - `assess p for sepsis;`
+- **Drug admin**  - `administer Drug dose: 0.1 mcg/kg/min;`
+- **Tracking**  - `track p.lactate using KAE;`
 
 ## Project Structure
 
@@ -181,7 +181,7 @@ POST to `/run` with `{"code": "protocol ... { ... }"}`.
 
 ## License
 
-Proprietary — Aethryva Deeptech
+Proprietary  - Aethryva Deeptech
 
 ## Citation
 

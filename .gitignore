@@ -31,9 +31,8 @@ Thumbs.db
 *.db
 *.sqlite3
 
-# Build artifacts
-www/build/
-www/.docusaurus/
-
 # Research
 *.pdf
+
+# Website source (lives on docs-site branch)
+www/

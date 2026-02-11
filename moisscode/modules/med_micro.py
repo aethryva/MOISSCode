@@ -1,5 +1,5 @@
-"""
-med.micro — Microbiology Module for MOISSCode
+﻿"""
+med.micro  - Microbiology Module for MOISSCode
 Bacterial taxonomy, antibiotic susceptibility tables, MIC breakpoints.
 """
 

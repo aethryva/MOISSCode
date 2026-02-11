@@ -1,5 +1,5 @@
-"""
-med.epi — Epidemiology Module for MOISSCode
+﻿"""
+med.epi  - Epidemiology Module for MOISSCode
 SIR/SEIR models, R₀ calculations, outbreak tracking, and incidence metrics.
 """
 

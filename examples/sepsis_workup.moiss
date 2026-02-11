@@ -1,5 +1,5 @@
-// ═══════════════════════════════════════════════════════════════
-// Phase 3 Comprehensive Test — Language Features + Domain Modules
+﻿// ═══════════════════════════════════════════════════════════════
+// Sepsis Workup  - Comprehensive Clinical Protocol
 // ═══════════════════════════════════════════════════════════════
 
 import med.biochem;
@@ -54,7 +54,7 @@ protocol SepsisWorkup {
         administer Norepinephrine dose: 0.1 mcg/kg/min;
         alert "Sepsis protocol activated" severity: critical;
     } else {
-        alert "Patient stable — continue monitoring" severity: info;
+        alert "Patient stable  - continue monitoring" severity: info;
     }
 
     // ── 7. While Loop ──
@@ -63,5 +63,5 @@ protocol SepsisWorkup {
         let counter = counter + 1;
     }
 
-    alert "Phase 3 Complete — All Features Verified" severity: info;
+    alert "Workup complete  - all checks passed" severity: info;
 }

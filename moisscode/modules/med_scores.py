@@ -1,4 +1,4 @@
-"""Medical Scores — standardized clinical calculators for MOISSCode."""
+﻿"""Medical Scores  - standardized clinical calculators for MOISSCode."""
 
 from typing import Any
 

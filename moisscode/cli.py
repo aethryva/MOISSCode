@@ -1,4 +1,4 @@
-"""MOISSCode CLI — run, validate, and interact with MOISSCode protocols."""
+﻿"""MOISSCode CLI  - run, validate, and interact with MOISSCode protocols."""
 
 import sys
 import argparse
@@ -117,7 +117,7 @@ def cmd_version(args):
 def main():
     parser = argparse.ArgumentParser(
         prog='moiss',
-        description='MOISSCode — Multi Organ Intervention State Space Code'
+        description='MOISSCode  - Multi Organ Intervention State Space Code'
     )
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
 

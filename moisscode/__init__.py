@@ -1,5 +1,5 @@
-"""
-MOISSCode — Multi Organ Intervention State Space Code.
+﻿"""
+MOISSCode  - Multi Organ Intervention State Space Code.
 
 A domain-specific language for medical orchestration, clinical
 decision support, and biotech workflow automation.

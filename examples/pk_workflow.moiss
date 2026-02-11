@@ -1,6 +1,6 @@
-// Phase 2 Demo: Database + Pharmacokinetics
-// Shows med.db and med.pk capabilities alongside existing features
-protocol Phase2Demo {
+﻿// Pharmacokinetic Workflow  - PK-aware drug administration with database persistence
+// Demonstrates med.pk, med.db, med.finance, and med.research integration
+protocol PKWorkflow {
     input: Patient p;
 
     // 1. Clinical Assessment

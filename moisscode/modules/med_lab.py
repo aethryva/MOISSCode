@@ -1,5 +1,5 @@
-"""
-med.lab — Clinical Laboratory Module for MOISSCode
+﻿"""
+med.lab  - Clinical Laboratory Module for MOISSCode
 Complete lab panel interpretation with reference ranges and critical value flagging.
 """
 

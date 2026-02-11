@@ -1,9 +1,9 @@
-# Installation Guide
+﻿# Installation Guide
 
 ## Prerequisites
 
-- **Python 3.10+** — [Download here](https://www.python.org/downloads/)
-- **pip** — Comes with Python automatically
+- **Python 3.10+**  - [Download here](https://www.python.org/downloads/)
+- **pip**  - Comes with Python automatically
 
 ---
 

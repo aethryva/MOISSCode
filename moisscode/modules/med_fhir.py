@@ -1,4 +1,4 @@
-"""Medical FHIR — HL7 FHIR R4 bridge for MOISSCode.
+﻿"""Medical FHIR  - HL7 FHIR R4 bridge for MOISSCode.
 
 Converts between MOISSCode Patient objects and FHIR R4 resources,
 enabling interoperability with EHR systems, health information

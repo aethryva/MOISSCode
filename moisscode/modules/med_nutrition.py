@@ -1,5 +1,5 @@
-"""
-med.nutrition — Clinical Nutrition Module for MOISSCode
+﻿"""
+med.nutrition  - Clinical Nutrition Module for MOISSCode
 Caloric calculations, TPN formulations, BMI, and metabolic equations.
 """
 

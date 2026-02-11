@@ -1,4 +1,4 @@
-# MOISSCode Deployment Guide
+﻿# MOISSCode Deployment Guide
 
 ## 1. Local Development (Quickest Way)
 
@@ -60,7 +60,7 @@ services:
 2. Go to [railway.app](https://railway.app)
 3. Click "New Project" → "Deploy from GitHub repo"
 4. Select your repo
-5. Done — Railway auto-detects Python and deploys
+5. Done  - Railway auto-detects Python and deploys
 
 ### Option B: Render (Free Tier)
 1. Push to GitHub
@@ -74,6 +74,6 @@ services:
 
 ## 4. Security Notes
 
-- **The Engine is stateless** — no patient data is stored permanently.
+- **The Engine is stateless**  - no patient data is stored permanently.
 - **Always use `med.research.deidentify(p)`** before logging or exporting data.
 - **Enable HTTPS** in production (all cloud providers do this automatically).

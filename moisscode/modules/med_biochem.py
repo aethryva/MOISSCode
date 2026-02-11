@@ -1,5 +1,5 @@
-"""
-med.biochem — Biochemistry Engine for MOISSCode
+﻿"""
+med.biochem  - Biochemistry Engine for MOISSCode
 Provides enzyme kinetics, metabolic pathway modeling, and reaction rate calculations.
 """
 

@@ -1,11 +1,11 @@
-# Welcome to MOISSCode
+﻿# Welcome to MOISSCode
 
 **The Universal Language for Medical Orchestration**
 *By Aethryva Deeptech*
 
 ---
 
-MOISSCode (Multi Organ Intervention State Space Code) is a domain-specific language designed to bridge the gap between clinical intent and machine execution. Doctors and engineers speak the same language — literally.
+MOISSCode (Multi Organ Intervention State Space Code) is a domain-specific language designed to bridge the gap between clinical intent and machine execution. Doctors and engineers speak the same language  - literally.
 
 ## Why MOISSCode?
 
@@ -33,6 +33,6 @@ protocol SepsisCheck {
 
 ## Next Steps
 
-- [Installation Guide](getting-started/installation.md) — Get the engine running
-- [Language Reference](MOISSCode_Manual.md) — Learn every keyword and feature
-- [Medical Library](reference/stdlib.md) — Built-in modules reference
+- [Installation Guide](getting-started/installation.md)  - Get the engine running
+- [Language Reference](MOISSCode_Manual.md)  - Learn every keyword and feature
+- [Medical Library](reference/stdlib.md)  - Built-in modules reference

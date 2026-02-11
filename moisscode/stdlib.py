@@ -1,4 +1,4 @@
-"""MOISSCode Medical Library — core classes and module registry."""
+﻿"""MOISSCode Medical Library  - core classes and module registry."""
 
 import math
 import numpy as np
@@ -79,7 +79,7 @@ class MOISS_Classifier:
             return "TOO_LATE"
 
 class StandardLibrary:
-    """MOISSCode Medical Library — all 13 modules."""
+    """MOISSCode Medical Library  - all 13 modules."""
 
     def __init__(self):
         self.pk = PharmacokineticEngine()

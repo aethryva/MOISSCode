@@ -1,5 +1,5 @@
-"""
-med.genomics — Pharmacogenomics Module for MOISSCode
+﻿"""
+med.genomics  - Pharmacogenomics Module for MOISSCode
 CYP450 variants, drug metabolism phenotypes, and basic sequence handling.
 """
 
@@ -89,27 +89,27 @@ CYP450_DATABASE: Dict[str, CYP450Gene] = {
 # ─── Pharmacogenomic Dosing Guidelines ────────────────────
 PGX_GUIDELINES: Dict[tuple, Dict] = {
     ("CYP2D6", "Codeine", "PM"): {
-        "recommendation": "AVOID codeine — no analgesic effect (cannot convert to morphine)",
+        "recommendation": "AVOID codeine  - no analgesic effect (cannot convert to morphine)",
         "alternative": "Use morphine or non-opioid analgesics",
         "source": "CPIC"
     },
     ("CYP2D6", "Codeine", "UM"): {
-        "recommendation": "AVOID codeine — risk of toxicity (excessive morphine formation)",
+        "recommendation": "AVOID codeine  - risk of toxicity (excessive morphine formation)",
         "alternative": "Use non-opioid analgesics or morphine with dose reduction",
         "source": "CPIC"
     },
     ("CYP2C19", "Clopidogrel", "PM"): {
-        "recommendation": "AVOID clopidogrel — reduced antiplatelet effect",
+        "recommendation": "AVOID clopidogrel  - reduced antiplatelet effect",
         "alternative": "Use prasugrel or ticagrelor",
         "source": "CPIC"
     },
     ("CYP2C19", "Clopidogrel", "IM"): {
-        "recommendation": "Consider alternative antiplatelet — reduced effect possible",
+        "recommendation": "Consider alternative antiplatelet  - reduced effect possible",
         "alternative": "Prasugrel or ticagrelor preferred",
         "source": "CPIC"
     },
     ("CYP2C9", "Warfarin", "PM"): {
-        "recommendation": "REDUCE warfarin dose by 50-80% — increased bleeding risk",
+        "recommendation": "REDUCE warfarin dose by 50-80%  - increased bleeding risk",
         "alternative": "Consider lower starting dose (1-2 mg/day) with close INR monitoring",
         "source": "CPIC"
     },
@@ -119,7 +119,7 @@ PGX_GUIDELINES: Dict[tuple, Dict] = {
         "source": "CPIC"
     },
     ("CYP3A4", "Tacrolimus", "PM"): {
-        "recommendation": "REDUCE tacrolimus dose by 50% — risk of toxicity",
+        "recommendation": "REDUCE tacrolimus dose by 50%  - risk of toxicity",
         "alternative": "Close therapeutic drug monitoring required",
         "source": "CPIC"
     },
@@ -196,7 +196,7 @@ class GenomicsEngine:
             result.update(guideline)
             result["has_guideline"] = True
         else:
-            result["recommendation"] = "Standard dosing — no pharmacogenomic adjustment needed"
+            result["recommendation"] = "Standard dosing  - no pharmacogenomic adjustment needed"
             result["has_guideline"] = False
 
         return result

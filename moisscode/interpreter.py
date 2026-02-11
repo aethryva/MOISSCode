@@ -1,4 +1,4 @@
-"""MOISSCode Interpreter — executes parsed AST programs."""
+﻿"""MOISSCode Interpreter  - executes parsed AST programs."""
 
 from typing import Any, Dict, List, Optional
 from moisscode.ast_nodes import *
