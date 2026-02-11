@@ -1,5 +1,5 @@
 ﻿<p align="center">
-  <img src="www/static/img/moisscode_logo.png" alt="MOISSCode" width="360" />
+  <img src="assets/moisscode_logo.png" alt="MOISSCode" width="360" />
   <br/>
   <strong>Multi Organ Intervention State Space Code</strong>
 
@@ -91,7 +91,6 @@ parser = MOISSCodeParser(tokens)
 program = parser.parse_program()
 
 interp = MOISSCodeInterpreter()
-# Inject a real patient (optional  - defaults are used otherwise)
 interp.scope['p'] = {
     'type': 'Patient',
     'value': Patient(bp=85, hr=110, rr=24, temp=38.5, spo2=94,
@@ -105,23 +104,25 @@ for e in events:
 
 ## Library Reference
 
-MOISSCode ships with **13 built-in modules**, all accessible via the `med.` prefix:
+MOISSCode ships with **15 built-in modules**, all accessible via the `med.` prefix:
 
 | Module | Description |
 |---|---|
 | `med.scores` | Clinical scores (qSOFA, SOFA) |
-| `med.pk` | Pharmacokinetic engine (8 drugs, dosing, interactions) |
+| `med.pk` | Pharmacokinetic engine (16 drugs, dosing, interactions) |
 | `med.lab` | Lab panels (50+ tests, reference ranges, interpretation) |
 | `med.micro` | Microbiology (organisms, MIC breakpoints, empiric therapy) |
 | `med.genomics` | Pharmacogenomics (CYP450, CPIC guidelines) |
 | `med.biochem` | Enzyme kinetics, metabolic pathways |
-| `med.epi` | Epidemiology (SIR/SEIR models, R₀, herd immunity) |
+| `med.epi` | Epidemiology (SIR/SEIR models, R0, herd immunity) |
 | `med.nutrition` | Clinical nutrition (BMI, BEE, TPN, IV fluids) |
-| `med.fhir` | FHIR R4 bridge (Patient ↔ Bundle, MedicationRequest) |
+| `med.fhir` | FHIR R4 bridge (Patient to Bundle, MedicationRequest) |
 | `med.db` | SQLite persistence (patients, audit trail, alerts) |
 | `med.io` | Device I/O (pumps, ventilators, LIS) |
 | `med.finance` | CPT billing and cost tracking |
 | `med.research` | HIPAA-compliant de-identification |
+| `med.kae` | Kalman-Autoencoder state estimator for real-time vital sign tracking |
+| `med.moiss` | MOISS intervention timing classifier (prophylactic to too-late) |
 
 ## CLI
 
@@ -134,18 +135,18 @@ moiss version                  Print version
 
 ## Language Features
 
-- **Protocols**  - `protocol Name { ... }`
-- **Patient input**  - `input: Patient p;`
-- **Variables**  - `let x = expression;`
-- **Conditionals**  - `if condition { ... } else { ... }`
-- **Loops**  - `while condition { ... }` and `for item in list { ... }`
-- **Custom types**  - `type Bacteria { name: str; mic: float; }`
-- **Functions**  - `function calc(a, b) { return a + b; }`
-- **Lists**  - `let drugs = ["A", "B", "C"];`
-- **Alerts**  - `alert "message" severity: critical;`
-- **Assessments**  - `assess p for sepsis;`
-- **Drug admin**  - `administer Drug dose: 0.1 mcg/kg/min;`
-- **Tracking**  - `track p.lactate using KAE;`
+- **Protocols** - `protocol Name { ... }`
+- **Patient input** - `input: Patient p;`
+- **Variables** - `let x = expression;`
+- **Conditionals** - `if condition { ... } else { ... }`
+- **Loops** - `while condition { ... }` and `for item in list { ... }`
+- **Custom types** - `type Bacteria { name: str; mic: float; }`
+- **Functions** - `function calc(a, b) { return a + b; }`
+- **Lists** - `let drugs = ["A", "B", "C"];`
+- **Alerts** - `alert "message" severity: critical;`
+- **Assessments** - `assess p for sepsis;`
+- **Drug admin** - `administer Drug dose: 0.1 mcg/kg/min;`
+- **Tracking** - `track p.lactate using KAE;`
 
 ## Project Structure
 
@@ -158,8 +159,7 @@ moisscode/
 ├── ast_nodes.py      # AST definitions
 ├── interpreter.py    # Runtime engine
 ├── typesystem.py     # Type checking + Patient
-├── stdlib.py         # 13-module library
-├── version.py        # Versioning
+├── stdlib.py         # 15-module library
 └── modules/          # Domain modules (med.*)
 ```
 
@@ -179,10 +179,20 @@ uvicorn api:app --reload
 
 POST to `/run` with `{"code": "protocol ... { ... }"}`.
 
-## License
-
-Proprietary  - Aethryva Deeptech
-
 ## Citation
 
-If you use MOISSCode in research, please cite the MOISS Framework paper.
+If you use MOISSCode in research, please cite the MOISS Framework paper:
+
+> Kunche, N. (2026). *Multi-Organ Intervention State Space (MOISS): A Pharmacokinetic-Aware Framework for Critical Care Timing Classification.* medRxiv.
+> [https://www.medrxiv.org/content/10.64898/2026.02.08.26345873v1](https://www.medrxiv.org/content/10.64898/2026.02.08.26345873v1)
+
+## Contact
+
+- **Email:** [dev@aethryva.com](mailto:dev@aethryva.com)
+- **Feature requests and bugs:** [GitHub Issues](https://github.com/aethryva/MOISSCode/issues)
+- **Creator:** [Nikhil Kunche](https://www.linkedin.com/in/nikhilkunche/)
+- **Documentation:** [moisscode.com](https://moisscode.com)
+
+## License
+
+Proprietary - Aethryva Deeptech
