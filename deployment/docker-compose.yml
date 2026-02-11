@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  moiss-api:
+    build:
+      context: ../
+      dockerfile: deployment/Dockerfile.api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../moisscode:/app/moisscode
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  moiss-ide:
+    build:
+      context: ../moiss-web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - moiss-api
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+
+# future:
+#  redis: 
+#    image: redis:alpine

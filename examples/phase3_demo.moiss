@@ -1,0 +1,67 @@
+// ═══════════════════════════════════════════════════════════════
+// Phase 3 Comprehensive Test — Language Features + Domain Modules
+// ═══════════════════════════════════════════════════════════════
+
+import med.biochem;
+import med.lab;
+import med.micro;
+import med.genomics;
+import med.epi;
+import med.nutrition;
+
+// ─── Custom Type ──────────────────────────────────────────
+type Isolate {
+    organism: str;
+    mic: float;
+    antibiotic: str;
+    resistant: bool;
+}
+
+// ─── Custom Function ──────────────────────────────────────
+function is_mdr(mic_count, threshold) {
+    if mic_count >= threshold {
+        return true;
+    }
+    return false;
+}
+
+// ─── Main Protocol ────────────────────────────────────────
+protocol SepsisWorkup {
+    input: Patient p;
+
+    // ── 1. Clinical Scoring ──
+    let score = med.scores.qsofa(p);
+    assess p for sepsis;
+
+    // ── 2. Track Vitals with KAE ──
+    track p.hr using KAE;
+    track p.lactate using KAE;
+
+    // ── 3. Lists + For-Each ──
+    let abx_panel = ["Vancomycin", "Meropenem", "Ceftriaxone"];
+    for abx in abx_panel {
+        alert abx severity: info;
+    }
+
+    // ── 4. Constructor + Custom Type ──
+    let ecoli = Isolate { organism: "E.coli", mic: 0.5, antibiotic: "Ceftriaxone", resistant: false };
+
+    // ── 5. Custom Function Call ──
+    let mdr_check = is_mdr(3, 3);
+
+    // ── 6. Conditional Logic ──
+    if score >= 2 {
+        administer Norepinephrine dose: 0.1 mcg/kg/min;
+        alert "Sepsis protocol activated" severity: critical;
+    } else {
+        alert "Patient stable — continue monitoring" severity: info;
+    }
+
+    // ── 7. While Loop ──
+    let counter = 0;
+    while counter < 3 {
+        let counter = counter + 1;
+    }
+
+    alert "Phase 3 Complete — All Features Verified" severity: info;
+}

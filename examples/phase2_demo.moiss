@@ -1,0 +1,41 @@
+// Phase 2 Demo: Database + Pharmacokinetics
+// Shows med.db and med.pk capabilities alongside existing features
+protocol Phase2Demo {
+    input: Patient p;
+
+    // 1. Clinical Assessment
+    let score = med.scores.qsofa(p);
+    track p.lactate using KAE;
+
+    // 2. Drug Administration with PK-aware MOISS check
+    if score >= 2 {
+        // Alert
+        alert "Sepsis detected - qSOFA score critical" severity: critical;
+
+        // Check drug interactions before administering
+        med.pk.check_interactions("Norepinephrine");
+
+        // Calculate proper dose for this patient's weight
+        med.pk.calculate_dose("Norepinephrine", 70);
+
+        // Administer (MOISS now uses real PK onset from drug database)
+        administer Norepinephrine dose: 0.1 mcg/kg/min;
+
+        // Save patient to database
+        med.db.save_patient("PT-001", "Demo Patient", 55, 70.0, "M");
+
+        // Save lab result
+        med.db.save_lab("PT-001", "Lactate", 3.5, "mmol/L");
+
+        // Bill
+        med.finance.bill("99291", "Critical Care");
+
+        // Research
+        med.research.deidentify(p);
+    } else {
+        alert "Patient stable" severity: info;
+    }
+
+    // 3. Assessment
+    assess p for sepsis;
+}

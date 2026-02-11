@@ -1,0 +1,35 @@
+// Full Feature Test Protocol (using med. prefix)
+// Tests: let, if/else, track, administer, alert, assess, function calls
+protocol FeatureTest {
+    input: Patient p;
+
+    // 1. Variable Assignment
+    let score = med.scores.qsofa(p);
+
+    // 2. KAE Tracking
+    track p.lactate using KAE;
+
+    // 3. If/Else with multiple statement types
+    if score >= 2 {
+        // Administer drug
+        administer Norepinephrine dose: 0.1 mcg/kg/min;
+
+        // Alert clinician
+        alert "Sepsis detected - initiating protocol" severity: critical;
+
+        // IO: Connect device and infuse
+        med.io.connect_device("Pump_01", "InfusionPump");
+        med.io.infuse("Pump_01", "Norepinephrine", 0.05);
+
+        // Finance: Bill for critical care
+        med.finance.bill("99291", "Critical Care - First Hour");
+
+        // Research: Anonymize and log
+        med.research.deidentify(p);
+    } else {
+        alert "Patient stable - monitoring" severity: info;
+    }
+
+    // 4. Assessment
+    assess p for sepsis;
+}
