@@ -187,7 +187,7 @@ POST to `/run` with `{"code": "protocol ... { ... }"}`.
 
 If you use MOISSCode in research, please cite the MOISS Framework paper:
 
-> Kunche, N. (2026). *Multi-Organ Intervention State Space (MOISS): A Pharmacokinetic-Aware Framework for Critical Care Timing Classification.* medRxiv.
+> Kunche, N. (2026). *Multi-Organ Intervention State Space (MOISS): A Collision Geometry Framework for Quantifying Therapeutic Windows Across 10 Organ Systems in 301,470 ICU Patients.* medRxiv.
 > [https://www.medrxiv.org/content/10.64898/2026.02.08.26345873v1](https://www.medrxiv.org/content/10.64898/2026.02.08.26345873v1)
 
 ## Contact
