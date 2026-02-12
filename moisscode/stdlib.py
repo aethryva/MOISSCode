@@ -79,7 +79,7 @@ class MOISS_Classifier:
             return "TOO_LATE"
 
 class StandardLibrary:
-    """MOISSCode Medical Library  - all 13 modules."""
+    """MOISSCode Medical Library  - all 15 modules."""
 
     def __init__(self):
         self.pk = PharmacokineticEngine()
