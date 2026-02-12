@@ -185,10 +185,15 @@ POST to `/run` with `{"code": "protocol ... { ... }"}`.
 
 ## Citation
 
-If you use MOISSCode in research, please cite the MOISS Framework paper:
+If you use MOISSCode in research, please cite:
 
+**MOISS Framework:**
 > Kunche, N. (2026). *Multi-Organ Intervention State Space (MOISS): A Collision Geometry Framework for Quantifying Therapeutic Windows Across 10 Organ Systems in 301,470 ICU Patients.* medRxiv.
 > [https://www.medrxiv.org/content/10.64898/2026.02.08.26345873v1](https://www.medrxiv.org/content/10.64898/2026.02.08.26345873v1)
+
+**KAE Algorithm:**
+> Kunche, N. (2025). *The Kunche Adaptive Estimator: A Reliability-Adaptive Kalman Filtering Framework for Autonomous Multi-Biomarker State Estimation in Critical Care Monitoring.* Authorea.
+> [https://doi.org/10.22541/au.176313985.55971071/v1](https://doi.org/10.22541/au.176313985.55971071/v1)
 
 ## Contact
 
