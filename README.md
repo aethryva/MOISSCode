@@ -11,7 +11,7 @@
   </p>
 </p>
 
-> **⚠️ RESEARCH USE ONLY** — MOISSCode is a research prototype. It is **NOT** approved by FDA, CDSCO, or any regulatory body for clinical decision-making. Do not use MOISSCode output to make real patient care decisions. Aethryva Deeptech accepts no liability for clinical outcomes.
+> **⚠️ RESEARCH USE ONLY** <br> MOISSCode is a research prototype. It is **NOT** approved by FDA, CDSCO, or any regulatory body for clinical decision-making. Do not use MOISSCode output to make real patient care decisions. Aethryva Deeptech accepts no liability for clinical outcomes.
 
 ---
 
