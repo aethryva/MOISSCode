@@ -49,7 +49,7 @@ class EpiEngine:
 
     # ─── SIR Model Simulation ──────────────────────────────────
     def sir_model(self, population: int, initial_infected: int,
-                  beta: float, gamma: float, days: int = 100) -> Dict:
+                  beta: float, gamma: float, days = 100) -> Dict:
         """
         Run SIR (Susceptible-Infected-Recovered) model simulation.
         dS/dt = -β × S × I / N
@@ -66,6 +66,7 @@ class EpiEngine:
         peak_I = I
         peak_day = 0
 
+        days = int(days)
         for step in range(int(days / dt)):
             dS = -beta * S * I / N * dt
             dI = (beta * S * I / N - gamma * I) * dt
@@ -97,7 +98,7 @@ class EpiEngine:
     # ─── SEIR Model ────────────────────────────────────────────
     def seir_model(self, population: int, initial_exposed: int,
                    beta: float, gamma: float, sigma: float,
-                   days: int = 100) -> Dict:
+                   days = 100) -> Dict:
         """
         SEIR model with exposed (latent) compartment.
         dS/dt = -β × S × I / N
@@ -116,6 +117,7 @@ class EpiEngine:
         peak_I = 0
         peak_day = 0
 
+        days = int(days)
         for step in range(int(days / dt)):
             dS = -beta * S * I / N * dt
             dE = (beta * S * I / N - sigma * E) * dt

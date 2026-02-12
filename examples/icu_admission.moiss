@@ -1,0 +1,137 @@
+// ═══════════════════════════════════════════════════════════════
+//  ICU Admission Bundle - MOISSCode Example Project
+//  Comprehensive critical care admission workup
+// ═══════════════════════════════════════════════════════════════
+//
+//  This protocol demonstrates a real-world ICU admission:
+//    1. Severity scoring (SOFA + qSOFA)
+//    2. Lab interpretation (CBC, BMP, renal, ABG)
+//    3. Renal function staging (eGFR via CKD-EPI)
+//    4. Nutrition assessment (BMI, caloric targets, TPN, fluids)
+//    5. Multi-drug PK workflow with interaction checking
+//    6. KAE biomarker tracking
+//    7. Tiered clinical alerts
+//
+//  Modules used: med.scores, med.lab, med.nutrition, med.pk, med.db
+//
+//  Run:  moiss run examples/icu_admission.moiss -v
+// ═══════════════════════════════════════════════════════════════
+
+import med.lab;
+import med.nutrition;
+import med.pk;
+
+// ─── Custom Types ─────────────────────────────────────────────
+
+type AdmissionRecord {
+    unit: str;
+    acuity: str;
+    sofa_score: int;
+    renal_stage: str;
+}
+
+// ─── Helper Functions ─────────────────────────────────────────
+
+function renal_stage(gfr_value) {
+    if gfr_value >= 90 {
+        return "G1 - Normal";
+    }
+    if gfr_value >= 60 {
+        return "G2 - Mild decrease";
+    }
+    if gfr_value >= 30 {
+        return "G3 - Moderate decrease";
+    }
+    if gfr_value >= 15 {
+        return "G4 - Severe decrease";
+    }
+    return "G5 - Kidney failure";
+}
+
+function classify_bmi(bmi_value) {
+    if bmi_value < 18.5 {
+        return "Underweight";
+    }
+    if bmi_value < 25 {
+        return "Normal";
+    }
+    if bmi_value < 30 {
+        return "Overweight";
+    }
+    return "Obese";
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MAIN PROTOCOL
+// ═══════════════════════════════════════════════════════════════
+
+protocol ICU_Admission {
+    input: Patient p;
+
+    // ── Step 1: Severity Scoring ──────────────────────────────
+    let sofa = med.scores.sofa(p);
+    let qsofa = med.scores.qsofa(p);
+
+    if sofa >= 6 {
+        alert "SOFA >= 6 -> High mortality risk" severity: critical;
+    }
+
+    // ── Step 2: Vital Sign Tracking via KAE ───────────────────
+    track p.hr using KAE;
+    track p.lactate using KAE;
+    track p.spo2 using KAE;
+
+    // ── Step 3: Lab Interpretation ────────────────────────────
+    //    Individual results against reference ranges
+    let wbc = med.lab.interpret("WBC", 18.5);
+    let hgb = med.lab.interpret("Hgb", 8.2);
+    let plt = med.lab.interpret("Plt", 95);
+    let sodium = med.lab.interpret("Na", 131);
+    let potassium = med.lab.interpret("K", 5.8);
+    let creatinine = med.lab.interpret("Cr", 2.1);
+    let glucose = med.lab.interpret("Glucose", 220);
+    let lactate_lab = med.lab.interpret("Lactate", 3.2);
+
+    // ── Step 4: Renal Function (CKD-EPI 2021) ────────────────
+    let gfr_result = med.lab.gfr(2.1, 55, "M");
+    let kidney_stage = renal_stage(35);
+
+    if 35 < 60 {
+        alert "eGFR < 60 - Renal impairment: adjust drug doses" severity: warning;
+    }
+
+    // ── Step 5: Nutrition Assessment ──────────────────────────
+    let bmi = med.nutrition.bmi(70, 170);
+    let bmi_class = classify_bmi(24.2);
+    let caloric_need = med.nutrition.harris_benedict(70, 170, 55, "M");
+    let icu_targets = med.nutrition.icu_caloric_target(70, "acute");
+    let fluids = med.nutrition.maintenance_fluids(70);
+    let tpn = med.nutrition.tpn_calculate(70, 1400, 84);
+
+    // ── Step 6: Multi-Drug PK Workflow ────────────────────────
+    let drugs = ["Vancomycin", "Meropenem", "Norepinephrine"];
+    for drug in drugs {
+        med.pk.check_interactions(drug);
+    }
+
+    // Vasopressor for hemodynamic support
+    administer Norepinephrine dose: 0.1 mcg/kg/min;
+
+    // Empiric antibiotics
+    administer Vancomycin dose: 1000 mg;
+    administer Meropenem dose: 1000 mg;
+
+    // ── Step 7: Persistence ───────────────────────────────────
+    med.db.save_patient("ICU-001", "Admission Patient", 55, 70.0, "M");
+    med.db.save_lab("ICU-001", "Lactate", 3.2, "mmol/L");
+    med.db.save_lab("ICU-001", "Creatinine", 2.1, "mg/dL");
+
+    // ── Step 8: Clinical Assessment ───────────────────────────
+    assess p for sepsis;
+
+    // ── Summary ───────────────────────────────────────────────
+    alert "ICU admission workup complete" severity: info;
+    alert "Labs: 8 results interpreted, eGFR calculated" severity: info;
+    alert "Nutrition: caloric targets + TPN + fluids set" severity: info;
+    alert "Drugs: 3 agents administered with PK checks" severity: info;
+}

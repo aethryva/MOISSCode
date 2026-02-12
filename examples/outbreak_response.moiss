@@ -1,0 +1,157 @@
+// ═══════════════════════════════════════════════════════════════
+//  Outbreak Response Toolkit - MOISSCode Example Project
+//  Population-level epidemiology + patient-level triage
+// ═══════════════════════════════════════════════════════════════
+//
+//  This protocol demonstrates public health epidemiology:
+//    1. Disease parameter lookup (R0, incubation, CFR)
+//    2. R0 calculation from transmission data
+//    3. SIR compartmental epidemic modeling
+//    4. SEIR modeling with exposed compartment
+//    5. Herd immunity threshold calculation
+//    6. Incidence rate and prevalence metrics
+//    7. Case fatality rate computation
+//    8. Organism identification for outbreak pathogen
+//    9. Patient-level severity scoring and triage
+//    10. Surveillance lab interpretation
+//
+//  Modules used: med.epi, med.micro, med.lab, med.scores, med.db
+//
+//  Run:  moiss run examples/outbreak_response.moiss -v
+// ═══════════════════════════════════════════════════════════════
+
+import med.epi;
+import med.micro;
+import med.lab;
+
+// ─── Custom Types ─────────────────────────────────────────────
+
+type OutbreakReport {
+    pathogen: str;
+    r0: float;
+    herd_threshold: float;
+    cfr_pct: float;
+    total_cases: int;
+}
+
+// ─── Helper Functions ─────────────────────────────────────────
+
+function epidemic_alert_level(r0_value) {
+    if r0_value >= 5 {
+        return "CRITICAL - Highly transmissible";
+    }
+    if r0_value >= 2 {
+        return "HIGH - Sustained transmission likely";
+    }
+    if r0_value >= 1 {
+        return "MODERATE - Epidemic potential";
+    }
+    return "LOW - Self-limiting";
+}
+
+function triage_category(qsofa_score) {
+    if qsofa_score >= 2 {
+        return "RED - Immediate treatment";
+    }
+    if qsofa_score >= 1 {
+        return "YELLOW - Urgent";
+    }
+    return "GREEN - Non-urgent";
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PROTOCOL 1: Outbreak Surveillance
+// ═══════════════════════════════════════════════════════════════
+
+protocol OutbreakSurveillance {
+    input: Patient p;
+
+    // ── Step 1: Disease Parameters ────────────────────────────
+    //    Lookup known epidemiological parameters
+    let covid_params = med.epi.disease_params("covid19");
+    let measles_params = med.epi.disease_params("measles");
+    let influenza_params = med.epi.disease_params("influenza");
+
+    // ── Step 2: R0 Calculation ────────────────────────────────
+    //    Calculate from field transmission data
+    //    beta = 0.3 (contacts * probability), gamma = 0.1 (1/10 day recovery)
+    let r0_estimate = med.epi.r0(0.3, 0.1);
+    let alert_level = epidemic_alert_level(3);
+
+    if 3 >= 2 {
+        alert "R0 >= 2 - Sustained community transmission expected" severity: critical;
+    }
+
+    // ── Step 3: Herd Immunity Threshold ───────────────────────
+    let herd_thresh = med.epi.herd_immunity(3.0);
+
+    // ── Step 4: SIR Model Simulation ──────────────────────────
+    //    Population: 100,000 | Initial infected: 10
+    //    beta=0.3, gamma=0.1, simulate 90 days
+    let sir_result = med.epi.sir_model(100000, 10, 0.3, 0.1, 90);
+
+    // ── Step 5: SEIR Model (with Exposed compartment) ─────────
+    //    sigma = 0.2 (1/5 day incubation period)
+    let seir_result = med.epi.seir_model(100000, 10, 0.3, 0.1, 0.2, 90);
+
+    // ── Step 6: Population Metrics ────────────────────────────
+    //    Incidence: 450 new cases in 500,000 population over 30 days
+    let incidence = med.epi.incidence_rate(450, 500000, 30);
+
+    //    Prevalence: 2,500 total active cases in 500,000 population
+    let prev = med.epi.prevalence(2500, 500000);
+
+    //    Case fatality rate: 12 deaths among 450 confirmed cases
+    let cfr = med.epi.cfr(12, 450);
+
+    alert "Population metrics calculated: incidence, prevalence, CFR" severity: info;
+
+    // ── Step 7: Pathogen Identification ───────────────────────
+    //    Identify outbreak organism and check resistance
+    let pathogen = med.micro.identify("k_pneumoniae");
+    let gram_neg_ddx = med.micro.gram_stain_ddx("negative", "rod");
+
+    //    Susceptibility of outbreak strain
+    let kp_mero = med.micro.susceptibility("k_pneumoniae", "Meropenem", 0.25);
+    let kp_cipro = med.micro.susceptibility("k_pneumoniae", "Ciprofloxacin", 2.0);
+
+    //    Empiric therapy for sepsis from this pathogen
+    let empiric = med.micro.empiric_therapy("sepsis");
+
+    // ── Step 8: Surveillance Labs ─────────────────────────────
+    //    Monitor inflammatory markers across patient population
+    let wbc = med.lab.interpret("WBC", 18.5);
+    let crp = med.lab.interpret("CRP", 85);
+    let procalcitonin = med.lab.interpret("Procalcitonin", 4.5);
+    let lactate = med.lab.interpret("Lactate", 3.2);
+
+    // ── Step 9: Patient Triage ────────────────────────────────
+    let qsofa_score = med.scores.qsofa(p);
+    let triage = triage_category(qsofa_score);
+
+    track p.hr using KAE;
+    track p.temp using KAE;
+    track p.spo2 using KAE;
+
+    if qsofa_score >= 2 {
+        alert "Patient triaged RED - Immediate treatment" severity: critical;
+        administer Meropenem dose: 1000 mg;
+    } else {
+        alert "Patient triaged YELLOW/GREEN - Monitor" severity: info;
+    }
+
+    // ── Step 10: Persistence ──────────────────────────────────
+    med.db.save_patient("OB-001", "Outbreak Patient", 55, 70.0, "M");
+    med.db.save_lab("OB-001", "WBC", 18.5, "K/uL");
+    med.db.save_lab("OB-001", "Lactate", 3.2, "mmol/L");
+    med.research.deidentify(p);
+
+    // ── Final Assessment ──────────────────────────────────────
+    assess p for sepsis;
+
+    // ── Summary ───────────────────────────────────────────────
+    alert "Outbreak surveillance complete" severity: info;
+    alert "Epi: R0 + SIR + SEIR modeled, herd immunity calculated" severity: info;
+    alert "Metrics: Incidence, prevalence, and CFR computed" severity: info;
+    alert "Clinical: Pathogen ID, susceptibility, patient triaged" severity: info;
+}

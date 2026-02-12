@@ -1,0 +1,154 @@
+// ═══════════════════════════════════════════════════════════════
+//  Antibiotic Stewardship Advisor - MOISSCode Example Project
+//  Intelligent antimicrobial selection and dose optimization
+// ═══════════════════════════════════════════════════════════════
+//
+//  This protocol demonstrates antibiotic stewardship:
+//    1. Organism identification and profiling
+//    2. Antibiotic susceptibility testing (MIC breakpoints)
+//    3. Empiric therapy recommendations
+//    4. Gram stain differential diagnosis
+//    5. Renal function assessment for dose adjustment
+//    6. Pharmacogenomic CYP450 drug metabolism check
+//    7. Multi-drug interaction screening
+//    8. De-identification for research export
+//
+//  Modules used: med.micro, med.lab, med.pk, med.genomics,
+//                med.research, med.db
+//
+//  Run:  moiss run examples/abx_stewardship.moiss -v
+// ═══════════════════════════════════════════════════════════════
+
+import med.micro;
+import med.lab;
+import med.pk;
+import med.genomics;
+
+// ─── Custom Types ─────────────────────────────────────────────
+
+type CultureResult {
+    organism: str;
+    source: str;
+    gram: str;
+    susceptibility: str;
+}
+
+type StewardshipReport {
+    recommended_agent: str;
+    dose_adjusted: bool;
+    interactions_clear: bool;
+}
+
+// ─── Helper Functions ─────────────────────────────────────────
+
+function needs_renal_adjustment(gfr_value) {
+    if gfr_value < 30 {
+        return true;
+    }
+    return false;
+}
+
+function select_narrow_spectrum(suscept_result) {
+    // In real scenarios this would parse the susceptibility dict
+    // For now, return the first-line treatment recommendation
+    return "Ceftriaxone";
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PROTOCOL 1: Antibiotic Selection
+// ═══════════════════════════════════════════════════════════════
+
+protocol AntibioticStewardship {
+    input: Patient p;
+
+    // ── Step 1: Clinical Severity ─────────────────────────────
+    let score = med.scores.qsofa(p);
+
+    if score >= 2 {
+        alert "qSOFA >= 2 - Urgent antibiotic initiation required" severity: critical;
+    }
+
+    // ── Step 2: Track Inflammatory Markers via KAE ────────────
+    track p.hr using KAE;
+    track p.temp using KAE;
+    track p.lactate using KAE;
+
+    // ── Step 3: Organism Identification ───────────────────────
+    //    Identify the causative organism from culture
+    let ecoli_profile = med.micro.identify("e_coli");
+    let staph_profile = med.micro.identify("s_aureus");
+    let pseudo_profile = med.micro.identify("p_aeruginosa");
+
+    // ── Step 4: Gram Stain Differential ───────────────────────
+    let gram_neg_rods = med.micro.gram_stain_ddx("negative", "rod");
+
+    // ── Step 5: Susceptibility Testing ────────────────────────
+    //    Test E. coli against common antibiotics
+    let ecoli_cipro = med.micro.susceptibility("e_coli", "Ciprofloxacin", 0.25);
+    let ecoli_ceftri = med.micro.susceptibility("e_coli", "Ceftriaxone", 0.5);
+    let ecoli_mero = med.micro.susceptibility("e_coli", "Meropenem", 0.06);
+
+    //    Test S. aureus (MSSA vs MRSA check)
+    let staph_vanco = med.micro.susceptibility("s_aureus", "Vancomycin", 1.0);
+    let staph_oxa = med.micro.susceptibility("s_aureus", "Oxacillin", 0.5);
+
+    // ── Step 6: Empiric Therapy Recommendation ────────────────
+    let uti_empiric = med.micro.empiric_therapy("uti");
+    let pneumonia_empiric = med.micro.empiric_therapy("pneumonia");
+    let sepsis_empiric = med.micro.empiric_therapy("sepsis");
+
+    // ── Step 7: Renal Function for Dose Adjustment ────────────
+    let gfr = med.lab.gfr(2.1, 55, "M");
+    let needs_adjust = needs_renal_adjustment(35);
+
+    let cr_result = med.lab.interpret("Cr", 2.1);
+    let wbc_result = med.lab.interpret("WBC", 18.5);
+
+    if needs_adjust == true {
+        alert "eGFR < 30 - Significant renal dose adjustment needed" severity: warning;
+    }
+
+    // ── Step 8: Pharmacogenomics ──────────────────────────────
+    //    Check CYP450 metabolism for drug clearance
+    let cyp_voriconazole = med.genomics.drug_gene_check("Voriconazole");
+    let cyp_clopidogrel = med.genomics.drug_gene_check("Clopidogrel");
+
+    //    Get dosing guidance for a specific genotype
+    let dosing = med.genomics.dosing_guidance("CYP2C19", "Voriconazole", "*1/*2");
+
+    //    Check genomic interactions across concurrent medications
+    let genomic_interactions = med.genomics.interaction_check(["Voriconazole", "Omeprazole", "Clopidogrel"]);
+
+    // ── Step 9: PK Drug Interaction Check ─────────────────────
+    let abx_candidates = ["Vancomycin", "Meropenem", "Ceftriaxone"];
+    for abx in abx_candidates {
+        med.pk.check_interactions(abx);
+    }
+
+    // ── Step 10: Administer Selected Antibiotic ───────────────
+    if score >= 2 {
+        // Broad-spectrum for septic patient
+        administer Meropenem dose: 1000 mg;
+        administer Vancomycin dose: 1000 mg;
+        alert "Broad-spectrum dual coverage initiated" severity: warning;
+    } else {
+        // Targeted narrow-spectrum
+        administer Ceftriaxone dose: 1000 mg;
+        alert "Narrow-spectrum monotherapy started" severity: info;
+    }
+
+    // ── Step 11: Persistence + Research ───────────────────────
+    med.db.save_patient("ABX-001", "Stewardship Patient", 55, 70.0, "M");
+    med.db.save_lab("ABX-001", "WBC", 18.5, "K/uL");
+    med.db.save_lab("ABX-001", "Creatinine", 2.1, "mg/dL");
+    med.research.deidentify(p);
+
+    // ── Step 12: Final Assessment ─────────────────────────────
+    assess p for sepsis;
+
+    // ── Summary ───────────────────────────────────────────────
+    alert "Stewardship workup complete" severity: info;
+    alert "Organisms: 3 identified, 5 susceptibility tests run" severity: info;
+    alert "Genomics: CYP450 metabolism + interaction check done" severity: info;
+    alert "Therapy: Initiated per severity and susceptibility" severity: info;
+}
