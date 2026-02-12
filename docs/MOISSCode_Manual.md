@@ -326,7 +326,44 @@ protocol SepsisManagement {
 
 ---
 
+## 11. Gotchas & Tips
+
+### Reserved Keywords
+Words like `severity`, `protocol`, `input`, `let`, `if`, `else`, `while`, `for`, `in`, `track`, `using`, `assess`, `alert`, `administer`, `dose`, `import`, `type`, `extends`, `function`, `return`, `true`, `false`, `null`, `and`, `or`, `not` are reserved and **cannot be used as variable names**.
+
+```moiss
+// ❌ WRONG — "severity" is a keyword
+let severity = med.scores.qsofa(p);
+
+// ✅ CORRECT
+let qsofa_score = med.scores.qsofa(p);
+```
+
+### No Dict Literals
+MOISSCode does not support `{}` as inline dictionaries. Curly braces are for type constructors and code blocks only. Use individual function calls instead:
+
+```moiss
+// ❌ WRONG
+let result = med.lab.interpret_panel("CBC", {"WBC": 18.5});
+
+// ✅ CORRECT
+let wbc = med.lab.interpret("WBC", 18.5);
+```
+
+### All Numbers Are Floats
+The parser returns all numeric literals as floats (e.g., `90` becomes `90.0`). Module developers must cast where needed: `days = int(days)`.
+
+### File Encoding
+When reading `.moiss` files programmatically, use `utf-8-sig` encoding to handle BOM:
+```python
+with open("file.moiss", encoding="utf-8-sig") as f:
+    code = f.read()
+```
+
+---
+
 ## Glossary
+
 
 | Term | What It Means |
 |:---|:---|
