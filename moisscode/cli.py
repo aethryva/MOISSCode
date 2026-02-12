@@ -13,9 +13,31 @@ BANNER = r"""
  Aethryva Deeptech
 """
 
+DISCLAIMER = (
+    "\n\033[33m⚠️  RESEARCH USE ONLY\033[0m\n"
+    "MOISSCode is a research prototype. It is NOT approved by FDA, CDSCO,\n"
+    "or any regulatory body for clinical decision-making. Do not use\n"
+    "MOISSCode output to make real patient care decisions.\n"
+    "Aethryva Deeptech accepts no liability for clinical outcomes.\n"
+)
+
+
+def print_disclaimer():
+    """Print the research use disclaimer."""
+    print(DISCLAIMER)
+
 
 def cmd_run(args):
     """Execute a .moiss protocol file."""
+    print_disclaimer()
+
+    if getattr(args, 'unsafe', False):
+        print("\n\033[31;1m" + "=" * 50)
+        print("  UNSAFE MODE ENABLED")
+        print("  Dose validation errors will be bypassed.")
+        print("  This is intended for research scenarios ONLY.")
+        print("=" * 50 + "\033[0m\n")
+
     from moisscode.lexer import MOISSCodeLexer
     from moisscode.parser import MOISSCodeParser
     from moisscode.interpreter import MOISSCodeInterpreter
@@ -30,11 +52,12 @@ def cmd_run(args):
     program = parser.parse_program()
 
     interpreter = MOISSCodeInterpreter()
+    interpreter.unsafe_mode = getattr(args, 'unsafe', False)
     events = interpreter.execute(program)
 
-    print(f"\n{'═' * 50}")
+    print(f"\n{'=' * 50}")
     print(f"  {len(events)} events generated")
-    print(f"{'═' * 50}")
+    print(f"{'=' * 50}")
 
     if args.verbose:
         for i, e in enumerate(events):
@@ -43,6 +66,7 @@ def cmd_run(args):
 
 def cmd_validate(args):
     """Parse-only validation of a .moiss file."""
+    print_disclaimer()
     from moisscode.lexer import MOISSCodeLexer
     from moisscode.parser import MOISSCodeParser
 
@@ -74,6 +98,7 @@ def cmd_repl(args):
     from moisscode.parser import MOISSCodeParser
     from moisscode.interpreter import MOISSCodeInterpreter
 
+    print_disclaimer()
     print(BANNER.strip())
     print(f"REPL v{get_version()}")
     print(f"Type a protocol or statement. Use Ctrl+C to exit.\n")
@@ -125,6 +150,7 @@ def main():
     run_parser = subparsers.add_parser('run', help='Execute a .moiss protocol file')
     run_parser.add_argument('file', help='Path to .moiss file')
     run_parser.add_argument('-v', '--verbose', action='store_true', help='Show all events')
+    run_parser.add_argument('--unsafe', action='store_true', help='Bypass dose validation errors (research only)')
     run_parser.set_defaults(func=cmd_run)
 
     # moiss validate

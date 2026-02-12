@@ -27,6 +27,7 @@ class MOISSCodeInterpreter:
         self.user_types: Dict[str, TypeDef] = {}
         self.user_functions: Dict[str, FunctionDef] = {}
         self.call_stack: List[Dict] = []
+        self.unsafe_mode = False
         self.scope[self.LIBRARY_PREFIX] = {'type': 'Library', 'value': StandardLibrary()}
 
     # ─── Execute Program ───────────────────────────────────────
@@ -116,13 +117,40 @@ class MOISSCodeInterpreter:
     # ─── Administer ────────────────────────────────────────────
     def execute_administer(self, stmt: AdministerStmt):
         moiss_class = self.moiss.classify(5.0, stmt.drug_name)
+
+        # Dose validation via PK engine
+        pk_engine = self.scope[self.LIBRARY_PREFIX]['value'].pk
+        validation = pk_engine.validate_dose(
+            stmt.drug_name, stmt.dose_amount, stmt.dose_unit
+        )
+        level = validation["level"]
+
+        if level == "ERROR":
+            if self.unsafe_mode:
+                self.log(f"[UNSAFE] {validation['message']}")
+            else:
+                self.log(f"[DOSE ERROR] {validation['message']}")
+                event = {
+                    'type': 'DOSE_ERROR',
+                    'drug': stmt.drug_name,
+                    'dose': f"{stmt.dose_amount} {stmt.dose_unit}",
+                    'message': validation['message'],
+                }
+                self.runtime_events.append(event)
+                raise RuntimeError(validation['message'])
+        elif level == "WARNING":
+            self.log(f"[DOSE WARNING] {validation['message']}")
+        elif level == "UNKNOWN":
+            self.log(f"[DOSE] {validation['message']}")
+
         event = {
             'type': 'ADMINISTER',
             'drug': stmt.drug_name,
-            'dose': f"{stmt.dose_amount} {stmt.dose_unit}",
-            'moiss_class': moiss_class
+            'dose': f"{validation['converted_dose']} {validation['converted_unit']}",
+            'moiss_class': moiss_class,
+            'dose_validation': level,
         }
-        self.log(f"[Administer] {stmt.drug_name} {stmt.dose_amount} {stmt.dose_unit} | MOISS: {moiss_class}")
+        self.log(f"[Administer] {stmt.drug_name} {validation['converted_dose']} {validation['converted_unit']} | MOISS: {moiss_class} | Dose: {level}")
         self.runtime_events.append(event)
 
     # ─── If/Else ───────────────────────────────────────────────

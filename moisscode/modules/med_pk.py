@@ -26,6 +26,7 @@ class DrugProfile:
     dose_unit: str              # e.g., "mcg/kg/min", "mg", "mg/kg"
     max_dose: float             # Maximum safe dose
     min_dose: float             # Minimum effective dose
+    toxic_dose: float = 0.0     # Dose above which is dangerously toxic (0 = not set)
 
     # Safety
     contraindications: List[str] = field(default_factory=list)
@@ -53,6 +54,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mcg/kg/min",
         max_dose=3.3,
         min_dose=0.01,
+        toxic_dose=10.0,
         contraindications=["mesenteric_ischemia", "peripheral_vascular_disease"],
         interactions={
             "MAO_inhibitors": "SEVERE",
@@ -76,6 +78,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="units/min",
         max_dose=0.04,
         min_dose=0.01,
+        toxic_dose=0.1,
         contraindications=["coronary_artery_disease"],
         interactions={
             "Norepinephrine": "MONITOR",
@@ -97,6 +100,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mcg/kg/min",
         max_dose=2.0,
         min_dose=0.01,
+        toxic_dose=5.0,
         contraindications=["narrow_angle_glaucoma"],
         interactions={
             "Beta_blockers": "MAJOR",
@@ -118,6 +122,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         standard_dose=15.0,
         dose_unit="mg/kg",
         max_dose=20.0,
+        toxic_dose=40.0,
         min_dose=10.0,
         contraindications=[],
         interactions={
@@ -141,6 +146,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         standard_dose=40.0,
         dose_unit="mg",
         max_dose=200.0,
+        toxic_dose=600.0,
         min_dose=20.0,
         contraindications=["anuria", "hepatic_coma"],
         interactions={
@@ -164,6 +170,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         standard_dose=50.0,
         dose_unit="mcg/kg/min",
         max_dose=200.0,
+        toxic_dose=500.0,
         min_dose=5.0,
         contraindications=["egg_allergy", "propofol_infusion_syndrome_risk"],
         interactions={
@@ -187,6 +194,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mg",
         max_dose=500.0,
         min_dose=100.0,
+        toxic_dose=1500.0,
         contraindications=[],
         interactions={},
         route="IV",
@@ -206,6 +214,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="units/kg/hr",
         max_dose=25.0,
         min_dose=10.0,
+        toxic_dose=50.0,
         contraindications=["active_bleeding", "HIT_history", "severe_thrombocytopenia"],
         interactions={
             "Warfarin": "MAJOR",
@@ -230,6 +239,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mg/kg",
         max_dose=0.2,
         min_dose=0.05,
+        toxic_dose=0.5,
         contraindications=["respiratory_depression", "paralytic_ileus"],
         interactions={
             "Benzodiazepines": "SEVERE",
@@ -253,6 +263,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mcg/kg",
         max_dose=5.0,
         min_dose=0.5,
+        toxic_dose=15.0,
         contraindications=["respiratory_depression", "MAO_inhibitor_use"],
         interactions={
             "Benzodiazepines": "SEVERE",
@@ -276,6 +287,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mg/kg",
         max_dose=0.1,
         min_dose=0.02,
+        toxic_dose=0.3,
         contraindications=["acute_angle_glaucoma", "myasthenia_gravis"],
         interactions={
             "Fentanyl": "MAJOR",
@@ -299,6 +311,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mcg/kg/hr",
         max_dose=1.5,
         min_dose=0.2,
+        toxic_dose=4.0,
         contraindications=["heart_block", "severe_bradycardia"],
         interactions={
             "Beta_blockers": "MAJOR",
@@ -321,6 +334,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mg/kg",
         max_dose=4.5,
         min_dose=0.5,
+        toxic_dose=10.0,
         contraindications=["severe_hypertension", "eclampsia", "raised_ICP"],
         interactions={
             "Theophylline": "MAJOR",
@@ -344,6 +358,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mg",
         max_dose=3000.0,
         min_dose=250.0,
+        toxic_dose=6000.0,
         contraindications=["penicillin_allergy"],
         interactions={
             "Methotrexate": "MAJOR",
@@ -366,6 +381,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="mg",
         max_dose=2550.0,
         min_dose=500.0,
+        toxic_dose=5000.0,
         contraindications=["renal_failure_eGFR_below_30", "metabolic_acidosis"],
         interactions={
             "Contrast_dye": "MAJOR",
@@ -389,6 +405,7 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         dose_unit="units/kg",
         max_dose=0.3,
         min_dose=0.05,
+        toxic_dose=1.0,
         contraindications=["hypoglycemia"],
         interactions={
             "Beta_blockers": "MODERATE",
@@ -582,6 +599,110 @@ class PharmacokineticEngine:
         }
 
     # ─── Active Drug Management ────────────────────────────────
+    def validate_dose(self, drug_name: str, dose_amount: float,
+                      dose_unit: str) -> Dict:
+        """Validate a dose against the drug's PK profile.
+
+        Returns a dict with:
+            level: "SAFE", "WARNING", "ERROR", or "UNKNOWN"
+            message: human-readable explanation
+            converted_dose: dose after unit conversion (if applicable)
+            converted_unit: unit after conversion (if applicable)
+        """
+        profile = self.get_profile(drug_name)
+        if not profile:
+            return {
+                "level": "UNKNOWN",
+                "message": f"Drug '{drug_name}' not in registry. Dose validation skipped.",
+                "converted_dose": dose_amount,
+                "converted_unit": dose_unit,
+            }
+
+        effective_dose = dose_amount
+        effective_unit = dose_unit
+
+        # Check unit compatibility
+        if dose_unit != profile.dose_unit:
+            # Extract base units (first part before /)
+            given_base = dose_unit.split('/')[0]
+            expected_base = profile.dose_unit.split('/')[0]
+
+            from moisscode.typesystem import UnitSystem
+
+            if UnitSystem.are_compatible(given_base, expected_base):
+                # Same dimension, try to convert
+                try:
+                    factor = UnitSystem.CONVERSIONS.get((given_base, expected_base))
+                    if factor is not None:
+                        effective_dose = dose_amount * factor
+                        effective_unit = profile.dose_unit
+                        print(f"[PK] Unit converted: {dose_amount} {dose_unit} -> {effective_dose} {effective_unit}")
+                    else:
+                        # Same dimension but no direct conversion path
+                        return {
+                            "level": "WARNING",
+                            "message": (
+                                f"Unit '{dose_unit}' differs from expected '{profile.dose_unit}' "
+                                f"for {drug_name}. No direct conversion available."
+                            ),
+                            "converted_dose": dose_amount,
+                            "converted_unit": dose_unit,
+                        }
+                except ValueError:
+                    pass
+            else:
+                return {
+                    "level": "WARNING",
+                    "message": (
+                        f"Unit mismatch for {drug_name}: given '{dose_unit}', "
+                        f"expected '{profile.dose_unit}'. Cannot convert between different dimensions."
+                    ),
+                    "converted_dose": dose_amount,
+                    "converted_unit": dose_unit,
+                }
+
+        # Check dose ranges
+        if profile.toxic_dose > 0 and effective_dose >= profile.toxic_dose:
+            return {
+                "level": "ERROR",
+                "message": (
+                    f"TOXIC DOSE for {drug_name}: {effective_dose} {effective_unit} "
+                    f"exceeds toxic threshold ({profile.toxic_dose} {profile.dose_unit}). "
+                    f"Administration blocked."
+                ),
+                "converted_dose": effective_dose,
+                "converted_unit": effective_unit,
+            }
+
+        if effective_dose > profile.max_dose:
+            return {
+                "level": "WARNING",
+                "message": (
+                    f"HIGH DOSE for {drug_name}: {effective_dose} {effective_unit} "
+                    f"exceeds max safe dose ({profile.max_dose} {profile.dose_unit})."
+                ),
+                "converted_dose": effective_dose,
+                "converted_unit": effective_unit,
+            }
+
+        if effective_dose < profile.min_dose:
+            return {
+                "level": "WARNING",
+                "message": (
+                    f"LOW DOSE for {drug_name}: {effective_dose} {effective_unit} "
+                    f"below min effective dose ({profile.min_dose} {profile.dose_unit})."
+                ),
+                "converted_dose": effective_dose,
+                "converted_unit": effective_unit,
+            }
+
+        return {
+            "level": "SAFE",
+            "message": f"{drug_name} {effective_dose} {effective_unit} within safe range.",
+            "converted_dose": effective_dose,
+            "converted_unit": effective_unit,
+        }
+
     def administer(self, drug_name: str, dose: float,
                    weight_kg: float = 70.0) -> Dict:
         """Register that a drug has been administered (for interaction tracking)."""

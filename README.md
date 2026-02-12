@@ -2,12 +2,16 @@
   <img src="assets/moisscode_logo.png" alt="MOISSCode" width="360" />
   <br/>
   <strong>Multi Organ Intervention State Space Code</strong>
+  <br/>
+  <a href="https://github.com/aethryva/MOISSCode/actions/workflows/tests.yml"><img src="https://github.com/aethryva/MOISSCode/actions/workflows/tests.yml/badge.svg" alt="Tests" /></a>
 
   <p align="center">A domain-specific language for clinical decision support and biotech workflow automation.</p>
   <p align="center">
     <a href="#installation">Install</a> · <a href="#quick-start">Quick Start</a> · <a href="#library-reference">Library</a> · <a href="#cli">CLI</a> · <a href="docs/MOISSCode_Manual.md">Full Manual</a>
   </p>
 </p>
+
+> **⚠️ RESEARCH USE ONLY** — MOISSCode is a research prototype. It is **NOT** approved by FDA, CDSCO, or any regulatory body for clinical decision-making. Do not use MOISSCode output to make real patient care decisions. Aethryva Deeptech accepts no liability for clinical outcomes.
 
 ---
 
@@ -195,4 +199,4 @@ If you use MOISSCode in research, please cite the MOISS Framework paper:
 
 ## License
 
-Proprietary - Aethryva Deeptech
+BSL 1.1 - See [LICENSE](LICENSE) for details.

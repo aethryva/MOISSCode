@@ -7,7 +7,7 @@ name = "moisscode"
 dynamic = ["version"]
 description = "Multi Organ Intervention State Space Code — a domain-specific language for clinical decision support and biotech workflow automation."
 readme = "README.md"
-license = {text = "Proprietary"}
+license = {text = "BSL-1.1"}
 requires-python = ">=3.10"
 authors = [
     {name = "Aethryva Deeptech"}
