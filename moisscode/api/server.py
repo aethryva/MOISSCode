@@ -15,9 +15,13 @@ Environment variables:
 
 from __future__ import annotations
 
+import json
+import logging
 import os
+import threading
 import time
 import traceback
+from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
 try:
@@ -40,9 +44,27 @@ from .config import API_VERSION, API_TITLE, API_DESCRIPTION, TIERS
 from .auth import get_store
 
 
+# ── Constants ─────────────────────────────────────────────
+
+MAX_CODE_LENGTH = 10_000       # 10,000 characters
+MAX_BODY_BYTES = 65_536        # 64 KB
+EXECUTION_TIMEOUT_SEC = 10     # 10 seconds
+
+ALLOWED_ORIGINS = [
+    "https://moisscode.com",
+    "https://www.moisscode.com",
+    "https://api.moisscode.com",
+]
+
 # ── App setup ─────────────────────────────────────────────
 
 DEV_MODE = os.environ.get("MOISSCODE_API_DEV_MODE", "0") == "1"
+
+logger = logging.getLogger("moisscode.api")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
 
 app = FastAPI(
     title=API_TITLE,
@@ -52,17 +74,41 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS if not DEV_MODE else ["*"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["X-API-Key", "Content-Type"],
 )
+
+
+# ── Burst rate limiter ────────────────────────────────────
+
+class BurstLimiter:
+    """Per-minute sliding window rate limiter."""
+
+    def __init__(self):
+        self._windows: Dict[str, List[float]] = defaultdict(list)
+
+    def check(self, key_hash: str, limit: int) -> tuple[bool, int]:
+        """Check if request is within per-minute limit.
+        Returns (allowed, remaining)."""
+        now = time.time()
+        window = self._windows[key_hash]
+        # Remove entries older than 60 seconds
+        window[:] = [t for t in window if now - t < 60]
+        if len(window) >= limit:
+            return False, 0
+        window.append(now)
+        return True, limit - len(window)
+
+
+_burst_limiter = BurstLimiter()
 
 
 # ── Auth dependency ───────────────────────────────────────
 
-def require_auth(x_api_key: Optional[str] = Header(None)) -> str:
-    """Validate API key. Returns the raw key."""
+def require_auth(x_api_key: Optional[str] = Header(None), endpoint: str = "") -> str:
+    """Validate API key, enforce rate limits, log the request."""
     if DEV_MODE:
         return "dev"
     if not x_api_key:
@@ -73,13 +119,36 @@ def require_auth(x_api_key: Optional[str] = Header(None)) -> str:
     store = get_store()
     rec = store.lookup(x_api_key)
     if rec is None:
+        logger.warning("AUTH_FAIL key=%s... endpoint=%s", x_api_key[:8], endpoint)
         raise HTTPException(
             status_code=401,
             detail="Invalid or revoked API key",
         )
+
+    # Monthly limit
     allowed, reason = store.check_and_increment(x_api_key)
     if not allowed:
+        logger.warning("RATE_MONTHLY key=%s... endpoint=%s", x_api_key[:8], endpoint)
         raise HTTPException(status_code=429, detail=reason)
+
+    # Per-minute burst limit
+    tier = TIERS.get(rec.tier)
+    if tier:
+        burst_ok, remaining = _burst_limiter.check(
+            rec.key_hash, tier.rate_limit_per_minute
+        )
+        if not burst_ok:
+            logger.warning("RATE_BURST key=%s... endpoint=%s limit=%d/min",
+                           x_api_key[:8], endpoint, tier.rate_limit_per_minute)
+            raise HTTPException(
+                status_code=429,
+                detail=f"Per-minute rate limit exceeded ({tier.rate_limit_per_minute}/min). "
+                       f"Try again in a few seconds.",
+            )
+
+    # Audit log
+    logger.info("API_CALL key=%s... tier=%s endpoint=%s",
+                x_api_key[:8], rec.tier, endpoint)
     return x_api_key
 
 
@@ -97,7 +166,7 @@ def _make_patient(data: Optional[Dict[str, Any]] = None) -> Patient:
 
 
 def _run_code(code: str, patient_data: Optional[Dict[str, Any]] = None) -> dict:
-    """Parse and execute MOISSCode, return structured results."""
+    """Parse and execute MOISSCode with timeout enforcement."""
     start = time.perf_counter()
 
     lexer = MOISSCodeLexer()
@@ -109,8 +178,36 @@ def _run_code(code: str, patient_data: Optional[Dict[str, Any]] = None) -> dict:
     patient = _make_patient(patient_data)
     interp.scope["p"] = {"type": "Patient", "value": patient}
 
-    events = interp.execute(program)
+    # Execute with timeout
+    result_holder: Dict[str, Any] = {}
+    error_holder: Dict[str, Any] = {}
 
+    def _execute():
+        try:
+            result_holder["events"] = interp.execute(program)
+        except Exception as exc:
+            error_holder["error"] = exc
+
+    thread = threading.Thread(target=_execute, daemon=True)
+    thread.start()
+    thread.join(timeout=EXECUTION_TIMEOUT_SEC)
+
+    if thread.is_alive():
+        # Thread is still running - execution timed out
+        logger.warning("TIMEOUT code_length=%d", len(code))
+        return {
+            "success": False,
+            "events": [],
+            "alerts": [],
+            "stats": {"execution_time_ms": EXECUTION_TIMEOUT_SEC * 1000},
+            "error": f"Execution timed out ({EXECUTION_TIMEOUT_SEC}s limit). "
+                     f"Check for infinite loops or reduce protocol complexity.",
+        }
+
+    if "error" in error_holder:
+        raise error_holder["error"]
+
+    events = result_holder.get("events", [])
     elapsed = time.perf_counter() - start
 
     # Separate alerts from other events
@@ -222,12 +319,26 @@ async def run_protocol(request: Request, x_api_key: Optional[str] = Header(None)
         code (str): MOISSCode source code
         patient (dict, optional): Patient vital signs override
     """
-    api_key = require_auth(x_api_key)
-    body = await request.json()
+    api_key = require_auth(x_api_key, endpoint="/run")
 
+    # Input size validation
+    body_bytes = await request.body()
+    if len(body_bytes) > MAX_BODY_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Request body too large ({len(body_bytes)} bytes, limit {MAX_BODY_BYTES})",
+        )
+
+    body = json.loads(body_bytes)
     code = body.get("code")
     if not code:
         raise HTTPException(status_code=400, detail="Missing 'code' field")
+
+    if len(code) > MAX_CODE_LENGTH:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Code too long ({len(code)} chars, limit {MAX_CODE_LENGTH})",
+        )
 
     patient_data = body.get("patient")
 
@@ -269,7 +380,7 @@ async def call_module(request: Request, x_api_key: Optional[str] = Header(None))
         args (list): Positional arguments
         kwargs (dict): Keyword arguments
     """
-    api_key = require_auth(x_api_key)
+    api_key = require_auth(x_api_key, endpoint="/call")
     body = await request.json()
 
     module = body.get("module")
