@@ -1,4 +1,4 @@
-﻿"""MOISSCode CLI  - run, validate, and interact with MOISSCode protocols."""
+"""MOISSCode CLI  - run, validate, and interact with MOISSCode protocols."""
 
 import sys
 import argparse
@@ -213,7 +213,7 @@ def cmd_run(args):
                 mod = method.split('.')[1] if '.' in method else '?'
                 modules.setdefault(mod, []).append(e)
             for mod, calls in modules.items():
-                print(f"  {C_MAGENTA}◈{C_RESET} med.{mod} — {len(calls)} calls")
+                print(f"  {C_MAGENTA}◈{C_RESET} med.{mod} - {len(calls)} calls")
 
         # ── Assessments ──
         if assess:

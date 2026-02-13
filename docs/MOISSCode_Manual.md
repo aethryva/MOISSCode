@@ -1,4 +1,4 @@
-﻿# MOISSCode Language Reference
+# MOISSCode Language Reference
 **Version**: 1.0.0
 **By**: Aethryva Deeptech
 
@@ -332,7 +332,7 @@ protocol SepsisManagement {
 Words like `severity`, `protocol`, `input`, `let`, `if`, `else`, `while`, `for`, `in`, `track`, `using`, `assess`, `alert`, `administer`, `dose`, `import`, `type`, `extends`, `function`, `return`, `true`, `false`, `null`, `and`, `or`, `not` are reserved and **cannot be used as variable names**.
 
 ```moiss
-// ❌ WRONG — "severity" is a keyword
+// ❌ WRONG - "severity" is a keyword
 let severity = med.scores.qsofa(p);
 
 // ✅ CORRECT
