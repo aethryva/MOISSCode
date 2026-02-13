@@ -6,7 +6,7 @@ All notable changes to MOISSCode are documented here. This project follows [Sema
 
 ## [2.0.0] - 2026-02-13
 
-### Biggest update ever: 4 new modules, 4 expanded modules, ~2,900 lines of new clinical code.
+### 4 new modules, 4 expanded modules.
 
 ### Added: New Modules
 

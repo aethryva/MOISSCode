@@ -1,0 +1,94 @@
+// ========================================================
+// Drug Discovery Screening Pipeline
+// ========================================================
+// An end-to-end compound screening workflow that evaluates
+// drug candidates through molecular analysis, Lipinski,
+// ADMET, toxicity, PK profiling, and clinical trial design.
+//
+// Modules used: med.chem, med.pk, med.research, med.lab
+//
+// Run:  moiss run examples/drug_discovery.moiss -v
+// ========================================================
+
+import med.chem;
+import med.pk;
+import med.research;
+import med.lab;
+
+// ═══════════════════════════════════════════════════════════
+//  MAIN PROTOCOL
+// ═══════════════════════════════════════════════════════════
+
+protocol DrugScreeningPipeline {
+    input: Patient p;
+
+    // ── Phase 1: Molecular Property Analysis ──────────────
+    let mw = med.chem.molecular_weight("C17H19NO3");
+
+    // ── Phase 2: Drug-Likeness Screening ──────────────────
+    // Lipinski's Rule of Five: MW, LogP, HBD, HBA
+    let lipinski = med.chem.lipinski_check(285.34, 1.2, 1, 4);
+
+    // BCS classification for formulation strategy
+    let bcs = med.chem.bcs_classify("high", "high");
+
+    // ── Phase 3: ADMET Screening ──────────────────────────
+    let admet = med.chem.admet_screen(285.34, 1.2, 45.0, 3);
+
+    // ── Phase 4: Toxicity Analysis ────────────────────────
+    let morphine_tox = med.chem.tox_screen("morphine");
+    let aspirin_tox = med.chem.tox_screen("aspirin");
+
+    // ── Phase 5: Full Screening Pipeline ──────────────────
+    let aspirin_screen = med.chem.screen_compound("aspirin");
+    let atorvastatin_screen = med.chem.screen_compound("atorvastatin");
+    let morphine_screen = med.chem.screen_compound("morphine");
+
+    // ── Phase 6: Compound Database Queries ────────────────
+    // Lookup a specific compound
+    let aspirin_profile = med.chem.lookup("aspirin");
+    let metformin_profile = med.chem.lookup("metformin");
+
+    // Search by molecular target
+    let cox_inhibitors = med.chem.search_by_target("COX");
+
+    // Search by therapeutic class
+    let nsaids = med.chem.search_by_class("NSAID");
+    let antibiotics = med.chem.search_by_class("antibiotic");
+
+    // List all compounds
+    let all_compounds = med.chem.list_compounds();
+
+    // ── Phase 7: PK Profiling ─────────────────────────────
+    // Dose calculation
+    let morphine_dose = med.pk.calculate_dose("Morphine", 70);
+
+    // Drug interactions
+    let interactions = med.pk.check_interactions("Morphine", ["Midazolam"]);
+
+    // Renal and hepatic dose adjustments
+    let renal_adj = med.pk.renal_adjust("Morphine", 45);
+    let hepatic_adj = med.pk.hepatic_adjust("Morphine", "B");
+
+    // Therapeutic drug monitoring
+    let vanco_tdm = med.pk.therapeutic_range("Vancomycin");
+    let vanco_trough = med.pk.trough_estimate("Vancomycin", 1000, 12, 70);
+
+    // ── Phase 8: Clinical Trial Design ────────────────────
+    // Sample size calculation
+    let sample = med.research.sample_size(0.4, 0.05, 0.90);
+
+    // 3-arm RCT with 2:1:1 allocation
+    let randomization = med.research.randomize(200, 3, [2, 1, 1]);
+
+    // Stratified enrollment
+    let strata = med.research.stratify(200, "age_group", ["18-40", "41-65", "65+"]);
+
+    // ── Phase 9: De-identification ────────────────────────
+    med.research.deidentify(p);
+
+    // ── Summary ───────────────────────────────────────────
+    alert "Drug screening pipeline complete" severity: info;
+    alert "3 compounds screened, 2 targets queried" severity: info;
+    alert "Clinical trial: 200 patients, 3 arms, stratified" severity: info;
+}

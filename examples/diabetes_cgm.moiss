@@ -1,0 +1,108 @@
+// ========================================================
+// Diabetes CGM Dashboard
+// ========================================================
+// A comprehensive diabetes management protocol that combines
+// glucose analytics, lab interpretation, clinical scoring,
+// medical coding, and pharmacokinetic dose adjustment.
+//
+// Modules used: med.glucose, med.lab, med.scores, med.icd, med.pk
+//
+// Run:  moiss run examples/diabetes_cgm.moiss -v
+// ========================================================
+
+import med.glucose;
+import med.lab;
+import med.scores;
+import med.icd;
+import med.pk;
+
+// ─── Helper Functions ─────────────────────────────────────
+
+function classify_a1c(value) {
+    if value >= 9.0 {
+        return "VERY HIGH - urgent intervention needed";
+    }
+    if value >= 7.0 {
+        return "ABOVE TARGET - therapy adjustment recommended";
+    }
+    return "AT TARGET - continue current regimen";
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MAIN PROTOCOL
+// ═══════════════════════════════════════════════════════════
+
+protocol DiabetesCGMDashboard {
+    input: Patient p;
+
+    // ── Step 1: Lab Interpretation ─────────────────────────
+    // Interpret fasting glucose and most recent HbA1c
+    let glucose_lab = med.lab.interpret("Glucose", 185);
+    let hba1c_lab = med.lab.interpret("HbA1c", 8.2);
+
+    let a1c_class = classify_a1c(8.2);
+
+    // ── Step 2: HbA1c Estimation from CGM Mean ────────────
+    // Use the ADAG equation to estimate HbA1c from the
+    // patient's mean CGM glucose over 14 days
+    let a1c_est = med.glucose.hba1c_from_glucose(172);
+
+    // ── Step 3: CGM Analytics ─────────────────────────────
+    // Analyze 25 CGM readings
+    let cgm_data = [95, 120, 145, 190, 230, 185, 160, 110, 85, 72,
+                    68, 90, 135, 175, 210, 195, 140, 105, 88, 130,
+                    155, 180, 200, 170, 125];
+
+    // Time In Range (consensus target: 70-180 mg/dL)
+    let tir = med.glucose.time_in_range(cgm_data);
+
+    // Glucose Management Indicator
+    let gmi = med.glucose.gmi(172);
+
+    // Glycemic variability: CV, MAGE, SD
+    let variability = med.glucose.glycemic_variability(cgm_data);
+
+    // ── Step 4: Insulin Regimen Calculation ────────────────
+    // Calculate a full insulin regimen from Total Daily Dose
+    let regimen = med.glucose.full_regimen(42);
+
+    // Individual calculations
+    let isf = med.glucose.insulin_sensitivity_factor(42);
+    let icr = med.glucose.carb_ratio(42);
+    let basal = med.glucose.basal_rate(42);
+
+    // Sliding scale for current elevated glucose
+    let sliding = med.glucose.sliding_scale(230);
+
+    // Correction dose
+    let correction = med.glucose.correction_dose(230, 120, 43);
+
+    // ── Step 5: DKA Screening ─────────────────────────────
+    let dka = med.glucose.dka_check(350, 7.28, 16, 1.8);
+
+    // ── Step 6: Hypoglycemia Review ───────────────────────
+    let hypo = med.glucose.hypo_check(68);
+
+    // ── Step 7: Cardiovascular Risk ───────────────────────
+    let cv_risk = med.scores.framingham(p);
+
+    // ── Step 8: ICD-10 Coding ─────────────────────────────
+    let dx_code = med.icd.lookup("E11.65");
+    let dx_search = med.icd.search("diabetes");
+    let drg = med.icd.drg_lookup(["E11.65"]);
+    let valid = med.icd.validate_codes(["E11.65", "E11.9", "FAKE.1"]);
+
+    // ── Step 9: Metformin Renal Safety ────────────────────
+    let gfr = med.lab.gfr(1.4, 62, "M");
+    let metformin_adj = med.pk.renal_adjust("Metformin", 55);
+
+    // ── Step 10: Persistence ──────────────────────────────
+    med.db.save_patient("DM-001", "CGM Dashboard Patient", 62, 85.0, "M");
+    med.db.save_lab("DM-001", "HbA1c", 8.2, "%");
+    med.db.save_lab("DM-001", "Glucose", 185, "mg/dL");
+
+    // ── Summary Alerts ────────────────────────────────────
+    alert "Diabetes CGM Dashboard complete" severity: info;
+    alert "A1c class: ABOVE TARGET" severity: warning;
+    alert "DKA screening: criteria met" severity: critical;
+}
