@@ -749,6 +749,164 @@ class PharmacokineticEngine:
         }
 
 
+    # ── Renal / Hepatic Dose Adjustment ────────────────────
+
+    def renal_adjust(self, drug_name: str, gfr: float) -> Dict:
+        """
+        Calculate renal dose adjustment based on eGFR.
+        Returns adjustment factor and recommendation.
+        """
+        profile = self.get_profile(drug_name)
+        if not profile:
+            return {"error": f"Unknown drug: {drug_name}"}
+
+        gfr = float(gfr)
+
+        if not profile.renal_adjust:
+            return {
+                'type': 'PK_RENAL',
+                'drug': drug_name,
+                'gfr': gfr,
+                'adjustment': 1.0,
+                'recommendation': 'No renal adjustment needed for this drug'
+            }
+
+        if gfr >= 60:
+            factor = 1.0
+            recommendation = "Normal dose"
+        elif gfr >= 30:
+            factor = 0.75
+            recommendation = "Reduce dose by 25% or extend interval"
+        elif gfr >= 15:
+            factor = 0.5
+            recommendation = "Reduce dose by 50%, monitor closely"
+        else:
+            factor = 0.25
+            recommendation = "Reduce dose by 75%, consider alternative, monitor drug levels"
+
+        adjusted_dose = profile.standard_dose * factor
+
+        return {
+            'type': 'PK_RENAL',
+            'drug': drug_name,
+            'gfr': gfr,
+            'adjustment_factor': factor,
+            'original_dose': profile.standard_dose,
+            'adjusted_dose': round(adjusted_dose, 1),
+            'dose_unit': profile.dose_unit,
+            'recommendation': recommendation
+        }
+
+    def hepatic_adjust(self, drug_name: str, child_pugh_class: str) -> Dict:
+        """
+        Calculate hepatic dose adjustment based on Child-Pugh class.
+        Classes: A (mild), B (moderate), C (severe).
+        """
+        profile = self.get_profile(drug_name)
+        if not profile:
+            return {"error": f"Unknown drug: {drug_name}"}
+
+        child_pugh_class = child_pugh_class.upper()
+
+        if not profile.hepatic_adjust:
+            return {
+                'type': 'PK_HEPATIC',
+                'drug': drug_name,
+                'child_pugh': child_pugh_class,
+                'adjustment': 1.0,
+                'recommendation': 'No hepatic adjustment needed for this drug'
+            }
+
+        adjustments = {
+            'A': (1.0, 'Normal dose, monitor LFTs'),
+            'B': (0.5, 'Reduce dose by 50%, monitor closely'),
+            'C': (0.25, 'Use with extreme caution or avoid, consider alternative'),
+        }
+
+        factor, recommendation = adjustments.get(child_pugh_class, (1.0, 'Unknown class'))
+        adjusted_dose = profile.standard_dose * factor
+
+        return {
+            'type': 'PK_HEPATIC',
+            'drug': drug_name,
+            'child_pugh': child_pugh_class,
+            'adjustment_factor': factor,
+            'original_dose': profile.standard_dose,
+            'adjusted_dose': round(adjusted_dose, 1),
+            'dose_unit': profile.dose_unit,
+            'recommendation': recommendation
+        }
+
+    def therapeutic_range(self, drug_name: str) -> Dict:
+        """
+        Get therapeutic drug monitoring targets (trough and peak levels).
+        """
+        # Common TDM ranges
+        tdm_ranges = {
+            'Vancomycin': {'trough': (15, 20), 'peak': (25, 40), 'unit': 'mcg/mL'},
+            'Heparin': {'trough': None, 'peak': None, 'unit': 'units/mL',
+                       'aptt_target': (60, 85), 'aptt_unit': 'seconds'},
+            'Insulin_Regular': {'trough': None, 'peak': None, 'unit': 'mU/mL',
+                               'glucose_target': (70, 180), 'glucose_unit': 'mg/dL'},
+            'Metformin': {'trough': (0.5, 2.0), 'peak': (1, 4), 'unit': 'mcg/mL'},
+        }
+
+        profile = self.get_profile(drug_name)
+        if not profile:
+            return {"error": f"Unknown drug: {drug_name}"}
+
+        tdm = tdm_ranges.get(drug_name, None)
+
+        if tdm:
+            return {
+                'type': 'PK_TDM',
+                'drug': drug_name,
+                'category': profile.category,
+                **tdm
+            }
+
+        return {
+            'type': 'PK_TDM',
+            'drug': drug_name,
+            'category': profile.category,
+            'trough': None,
+            'peak': None,
+            'note': 'No specific TDM ranges defined for this drug'
+        }
+
+    def trough_estimate(self, drug_name: str, dose: float,
+                        interval_hr: float, weight_kg: float = 70.0) -> Dict:
+        """
+        Estimate trough concentration using one-compartment model.
+        Ctrough = (Dose * F / Vd) * e^(-ke * tau)
+        """
+        profile = self.get_profile(drug_name)
+        if not profile:
+            return {"error": f"Unknown drug: {drug_name}"}
+
+        dose = float(dose)
+        interval_hr = float(interval_hr)
+        weight_kg = float(weight_kg)
+
+        ke = 0.693 / (profile.half_life_min / 60)  # elimination rate constant (per hour)
+        vd = weight_kg * 0.7  # estimated Vd (L)
+        tau = interval_hr  # dosing interval (hours)
+
+        c_peak = (dose * profile.bioavailability) / vd
+        c_trough = c_peak * math.exp(-ke * tau)
+
+        return {
+            'type': 'PK_TROUGH',
+            'drug': drug_name,
+            'dose': dose,
+            'interval_hr': interval_hr,
+            'c_peak_estimated': round(c_peak, 2),
+            'c_trough_estimated': round(c_trough, 4),
+            'half_life_hr': round(profile.half_life_min / 60, 1),
+            'unit': 'mg/L'
+        }
+
+
 if __name__ == "__main__":
     pk = PharmacokineticEngine()
 

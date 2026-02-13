@@ -108,7 +108,7 @@ for e in events:
 
 ## Library Reference
 
-MOISSCode ships with **15 built-in modules**, all accessible via the `med.` prefix:
+MOISSCode ships with **19 built-in modules**, all accessible via the `med.` prefix:
 
 | Module | Description |
 |---|---|
@@ -163,7 +163,7 @@ moisscode/
 ├── ast_nodes.py      # AST definitions
 ├── interpreter.py    # Runtime engine
 ├── typesystem.py     # Type checking + Patient
-├── stdlib.py         # 15-module library
+├── stdlib.py         # 19-module library
 └── modules/          # Domain modules (med.*)
 ```
 

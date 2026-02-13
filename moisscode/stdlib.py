@@ -17,6 +17,10 @@ from .modules.med_genomics import GenomicsEngine
 from .modules.med_epi import EpiEngine
 from .modules.med_nutrition import NutritionEngine
 from .modules.med_fhir import FHIRBridge
+from .modules.med_glucose import GlucoseEngine
+from .modules.med_chem import ChemEngine
+from .modules.med_signal import SignalEngine
+from .modules.med_icd import ICDEngine
 
 class KAE_Estimator:
     """Kalman-Autoencoder Estimator from the KAE Framework paper."""
@@ -79,7 +83,7 @@ class MOISS_Classifier:
             return "TOO_LATE"
 
 class StandardLibrary:
-    """MOISSCode Medical Library  - all 15 modules."""
+    """MOISSCode Medical Library - all 19 modules."""
 
     def __init__(self):
         self.pk = PharmacokineticEngine()
@@ -97,3 +101,7 @@ class StandardLibrary:
         self.epi = EpiEngine()
         self.nutrition = NutritionEngine()
         self.fhir = FHIRBridge()
+        self.glucose = GlucoseEngine()
+        self.chem = ChemEngine()
+        self.signal = SignalEngine()
+        self.icd = ICDEngine()
