@@ -112,19 +112,23 @@ MOISSCode ships with **19 built-in modules**, all accessible via the `med.` pref
 
 | Module | Description |
 |---|---|
-| `med.scores` | Clinical scores (qSOFA, SOFA) |
-| `med.pk` | Pharmacokinetic engine (16 drugs, dosing, interactions) |
-| `med.lab` | Lab panels (50+ tests, reference ranges, interpretation) |
+| `med.scores` | 12 validated clinical scores (qSOFA, SOFA, NEWS2, MELD-Na, CHA2DS2-VASc, HEART, Framingham, Child-Pugh, CURB-65, Wells PE, Glasgow-Blatchford, KDIGO AKI) |
+| `med.pk` | Pharmacokinetic engine (16 drugs, dosing, interactions, TDM, renal/hepatic adjustment) |
+| `med.lab` | Lab panels (50+ tests, reference ranges, eGFR via CKD-EPI 2021) |
 | `med.micro` | Microbiology (organisms, MIC breakpoints, empiric therapy) |
 | `med.genomics` | Pharmacogenomics (CYP450, CPIC guidelines) |
 | `med.biochem` | Enzyme kinetics, metabolic pathways |
 | `med.epi` | Epidemiology (SIR/SEIR models, R0, herd immunity) |
 | `med.nutrition` | Clinical nutrition (BMI, BEE, TPN, IV fluids) |
-| `med.fhir` | FHIR R4 bridge (Patient to Bundle, MedicationRequest) |
+| `med.fhir` | FHIR R4 bridge (Patient, Bundle, MedicationRequest) |
 | `med.db` | SQLite persistence (patients, audit trail, alerts) |
-| `med.io` | Device I/O (pumps, ventilators, LIS) |
+| `med.io` | Device management (infusion pumps, monitors, ventilators, waveforms, alarms) |
 | `med.finance` | CPT billing and cost tracking |
-| `med.research` | HIPAA-compliant de-identification |
+| `med.research` | De-identification, consent, randomization, sample size, stratification |
+| `med.glucose` | Diabetes management (HbA1c, CGM analytics, insulin dosing, DKA, hypoglycemia) |
+| `med.chem` | Medicinal chemistry (Lipinski, BCS, ADMET, toxicity, compound screening) |
+| `med.signal` | Biosignal processing (ECG peaks, HRV, SpO2, rhythm classification) |
+| `med.icd` | Medical coding (ICD-10-CM lookup, DRG grouping, SNOMED CT mapping) |
 | `med.kae` | Kalman-Autoencoder state estimator for real-time vital sign tracking |
 | `med.moiss` | MOISS intervention timing classifier (prophylactic to too-late) |
 
@@ -169,19 +173,21 @@ moisscode/
 
 ## API Server
 
+MOISSCode includes a REST API service for remote protocol execution.
+
 **Windows (PowerShell):**
 ```powershell
 py -m pip install -e ".[api]"
-py -m uvicorn api:app --reload
+py -m uvicorn moisscode.api.server:app --reload
 ```
 
 **macOS / Linux:**
 ```bash
 pip install -e ".[api]"
-uvicorn api:app --reload
+uvicorn moisscode.api.server:app --reload
 ```
 
-POST to `/run` with `{"code": "protocol ... { ... }"}`.
+See the `moisscode/api/` directory for full API documentation and configuration.
 
 ## Citation
 
