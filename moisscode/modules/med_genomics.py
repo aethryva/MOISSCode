@@ -83,6 +83,61 @@ CYP450_DATABASE: Dict[str, CYP450Gene] = {
             "*3/*3": "PM",
         }
     ),
+
+    # ─── v3.0 Expansion CYP450 Genes ────────────────
+    "CYP1A2": CYP450Gene(
+        gene="CYP1A2",
+        full_name="Cytochrome P450 1A2",
+        substrates=["Theophylline", "Caffeine", "Olanzapine", "Clozapine",
+                    "Melatonin", "Duloxetine", "Ropivacaine"],
+        inhibitors=["Fluvoxamine", "Ciprofloxacin", "Cimetidine"],
+        inducers=["Smoking", "Omeprazole", "Charcoal-broiled_foods", "Rifampin"],
+        phenotypes={
+            "*1A/*1A": "NM",
+            "*1A/*1F": "RM",
+            "*1F/*1F": "UM",
+            "*1A/*1C": "PM",
+        }
+    ),
+    "CYP2B6": CYP450Gene(
+        gene="CYP2B6",
+        full_name="Cytochrome P450 2B6",
+        substrates=["Efavirenz", "Methadone", "Bupropion", "Cyclophosphamide",
+                    "Ifosfamide", "Ketamine", "Propofol"],
+        inhibitors=["Ticlopidine", "Clopidogrel"],
+        inducers=["Rifampin", "Carbamazepine", "Phenobarbital"],
+        phenotypes={
+            "*1/*1": "NM",
+            "*1/*6": "IM",
+            "*6/*6": "PM",
+            "*4/*4": "UM",
+        }
+    ),
+    "CYP2E1": CYP450Gene(
+        gene="CYP2E1",
+        full_name="Cytochrome P450 2E1",
+        substrates=["Acetaminophen", "Ethanol", "Isoniazid", "Enflurane",
+                    "Halothane", "Sevoflurane"],
+        inhibitors=["Disulfiram", "Diallyl_sulfide"],
+        inducers=["Ethanol (chronic)", "Isoniazid"],
+        phenotypes={
+            "*1A/*1A": "NM",
+            "*5/*5": "PM",
+        }
+    ),
+    "CYP3A5": CYP450Gene(
+        gene="CYP3A5",
+        full_name="Cytochrome P450 3A5",
+        substrates=["Tacrolimus", "Cyclosporine", "Vincristine",
+                    "Saquinavir", "Nifedipine"],
+        inhibitors=["Ketoconazole", "Itraconazole"],
+        inducers=["Rifampin", "Dexamethasone"],
+        phenotypes={
+            "*1/*1": "NM",
+            "*1/*3": "IM",
+            "*3/*3": "PM",
+        }
+    ),
 }
 
 
@@ -121,6 +176,73 @@ PGX_GUIDELINES: Dict[tuple, Dict] = {
     ("CYP3A4", "Tacrolimus", "PM"): {
         "recommendation": "REDUCE tacrolimus dose by 50%  - risk of toxicity",
         "alternative": "Close therapeutic drug monitoring required",
+        "source": "CPIC"
+    },
+
+    # ─── v3.0 Expansion PGx Guidelines ─────────────
+    ("CYP2D6", "Tamoxifen", "PM"): {
+        "recommendation": "AVOID tamoxifen  - reduced conversion to endoxifen",
+        "alternative": "Consider aromatase inhibitor (if postmenopausal) or alternative endocrine therapy",
+        "source": "CPIC"
+    },
+    ("CYP2D6", "Tamoxifen", "IM"): {
+        "recommendation": "Consider alternative endocrine therapy  - reduced endoxifen levels",
+        "alternative": "Aromatase inhibitors preferred",
+        "source": "CPIC"
+    },
+    ("CYP2D6", "Tramadol", "PM"): {
+        "recommendation": "AVOID tramadol  - reduced analgesic effect (cannot form O-desmethyltramadol)",
+        "alternative": "Use non-CYP2D6-metabolized analgesic",
+        "source": "CPIC"
+    },
+    ("CYP2D6", "Tramadol", "UM"): {
+        "recommendation": "AVOID tramadol  - risk of respiratory depression",
+        "alternative": "Use non-CYP2D6-metabolized analgesic",
+        "source": "CPIC"
+    },
+    ("CYP2D6", "Ondansetron", "UM"): {
+        "recommendation": "Ondansetron may have reduced efficacy",
+        "alternative": "Consider granisetron (not CYP2D6 substrate)",
+        "source": "CPIC"
+    },
+    ("CYP2C19", "Voriconazole", "PM"): {
+        "recommendation": "REDUCE voriconazole dose  - risk of toxicity due to elevated levels",
+        "alternative": "Use therapeutic drug monitoring, consider 50% dose reduction",
+        "source": "CPIC"
+    },
+    ("CYP2C19", "Voriconazole", "UM"): {
+        "recommendation": "Voriconazole may be ineffective  - rapid metabolism",
+        "alternative": "Consider alternative antifungal or higher dose with TDM",
+        "source": "CPIC"
+    },
+    ("CYP2C9", "Celecoxib", "PM"): {
+        "recommendation": "REDUCE celecoxib dose by 50%  - increased exposure and GI/CV risk",
+        "alternative": "Use lowest effective dose; consider non-NSAID",
+        "source": "CPIC"
+    },
+    ("CYP2C9", "Phenytoin", "PM"): {
+        "recommendation": "REDUCE phenytoin dose by 25-50%  - risk of toxicity",
+        "alternative": "Close therapeutic drug monitoring, consider alternative AED",
+        "source": "CPIC"
+    },
+    ("CYP3A5", "Tacrolimus", "NM"): {
+        "recommendation": "Increase tacrolimus starting dose by 1.5-2x  - CYP3A5 expressers metabolize faster",
+        "alternative": "Standard dose with close TDM",
+        "source": "CPIC"
+    },
+    ("CYP3A5", "Tacrolimus", "PM"): {
+        "recommendation": "Standard tacrolimus dose  - CYP3A5 non-expressor (typical metabolism)",
+        "alternative": "None needed",
+        "source": "CPIC"
+    },
+    ("CYP1A2", "Olanzapine", "UM"): {
+        "recommendation": "Olanzapine may be ineffective at standard dose  - rapid metabolism",
+        "alternative": "Consider dose increase with TDM or alternative antipsychotic",
+        "source": "DPWG"
+    },
+    ("CYP2B6", "Efavirenz", "PM"): {
+        "recommendation": "REDUCE efavirenz dose to 400mg/day or consider alternative  - risk of CNS toxicity",
+        "alternative": "Dolutegravir-based regimen",
         "source": "CPIC"
     },
 }

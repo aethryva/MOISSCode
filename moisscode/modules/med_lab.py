@@ -90,7 +90,61 @@ LAB_REFERENCES: Dict[str, LabReference] = {
 
     # ─── Renal Function ───
     "BUN_Cr": LabReference("BUN_Cr", "BUN/Creatinine Ratio", "", 10.0, 20.0, panel="RENAL"),
+
+    # ─── Lipid Panel (v3.0) ───
+    "TotalChol": LabReference("TotalChol", "Total Cholesterol", "mg/dL", 0.0, 200.0, panel="LIPID"),
+    "LDL":       LabReference("LDL", "Low-Density Lipoprotein", "mg/dL", 0.0, 100.0, panel="LIPID"),
+    "HDL":       LabReference("HDL", "High-Density Lipoprotein", "mg/dL", 40.0, 100.0, panel="LIPID"),
+    "VLDL":      LabReference("VLDL", "Very Low-Density Lipoprotein", "mg/dL", 2.0, 30.0, panel="LIPID"),
+    "TG":        LabReference("TG", "Triglycerides", "mg/dL", 0.0, 150.0, None, 500.0, panel="LIPID"),
+
+    # ─── Iron Studies (v3.0) ───
+    "Iron":      LabReference("Iron", "Serum Iron", "μg/dL", 60.0, 170.0, panel="IRON"),
+    "TIBC":      LabReference("TIBC", "Total Iron Binding Capacity", "μg/dL", 250.0, 370.0, panel="IRON"),
+    "Ferritin":  LabReference("Ferritin", "Ferritin", "ng/mL", 12.0, 300.0, panel="IRON"),
+    "TransSat":  LabReference("TransSat", "Transferrin Saturation", "%", 20.0, 50.0, panel="IRON"),
+
+    # ─── Pancreatic Enzymes (v3.0) ───
+    "Amylase":   LabReference("Amylase", "Amylase", "U/L", 28.0, 100.0, None, 300.0, panel="PANC"),
+    "Lipase":    LabReference("Lipase", "Lipase", "U/L", 0.0, 160.0, None, 500.0, panel="PANC"),
+
+    # ─── Tumor Markers (v3.0) ───
+    "CEA":       LabReference("CEA", "Carcinoembryonic Antigen", "ng/mL", 0.0, 3.0, panel="TUMOR"),
+    "AFP":       LabReference("AFP", "Alpha-Fetoprotein", "ng/mL", 0.0, 10.0, panel="TUMOR"),
+    "CA125":     LabReference("CA125", "Cancer Antigen 125", "U/mL", 0.0, 35.0, panel="TUMOR"),
+    "CA19_9":    LabReference("CA19_9", "Cancer Antigen 19-9", "U/mL", 0.0, 37.0, panel="TUMOR"),
+    "PSA":       LabReference("PSA", "Prostate-Specific Antigen", "ng/mL", 0.0, 4.0, panel="TUMOR"),
+
+    # ─── Urine (v3.0) ───
+    "UProt":     LabReference("UProt", "Urine Protein", "mg/dL", 0.0, 14.0, panel="URINE"),
+    "UCr":       LabReference("UCr", "Urine Creatinine", "mg/dL", 20.0, 275.0, panel="URINE"),
+    "UOsm":      LabReference("UOsm", "Urine Osmolality", "mOsm/kg", 300.0, 900.0, panel="URINE"),
+    "Microalb":  LabReference("Microalb", "Urine Microalbumin", "mg/L", 0.0, 30.0, panel="URINE"),
+
+    # ─── Immunology (v3.0) ───
+    "IgG":       LabReference("IgG", "Immunoglobulin G", "mg/dL", 700.0, 1600.0, panel="IMMUNO"),
+    "IgA":       LabReference("IgA", "Immunoglobulin A", "mg/dL", 70.0, 400.0, panel="IMMUNO"),
+    "IgM":       LabReference("IgM", "Immunoglobulin M", "mg/dL", 40.0, 230.0, panel="IMMUNO"),
+    "C3":        LabReference("C3", "Complement C3", "mg/dL", 90.0, 180.0, panel="IMMUNO"),
+    "C4":        LabReference("C4", "Complement C4", "mg/dL", 10.0, 40.0, panel="IMMUNO"),
+
+    # ─── Coag Extras (v3.0) ───
+    "AntiXa":    LabReference("AntiXa", "Anti-Factor Xa", "IU/mL", 0.5, 1.0, panel="COAG"),
+    "TT":        LabReference("TT", "Thrombin Time", "sec", 14.0, 19.0, None, 30.0, panel="COAG"),
+
+    # ─── Endocrine (v3.0) ───
+    "Cortisol":  LabReference("Cortisol", "Cortisol (AM)", "μg/dL", 6.2, 19.4, panel="ENDO"),
+    "ACTH":      LabReference("ACTH", "Adrenocorticotropic Hormone", "pg/mL", 7.2, 63.3, panel="ENDO"),
+    "PTH":       LabReference("PTH", "Parathyroid Hormone", "pg/mL", 15.0, 65.0, panel="ENDO"),
+    "VitD":      LabReference("VitD", "25-Hydroxyvitamin D", "ng/mL", 30.0, 100.0, panel="ENDO"),
+    "HbA1c":     LabReference("HbA1c", "Hemoglobin A1c", "%", 4.0, 5.6, panel="ENDO"),
+    "CPeptide":  LabReference("CPeptide", "C-Peptide", "ng/mL", 0.8, 3.1, panel="ENDO"),
+
+    # ─── Electrolyte Extras (v3.0) ───
+    "Mg":        LabReference("Mg", "Magnesium", "mg/dL", 1.7, 2.2, 1.0, 4.0, panel="BMP"),
+    "Phos":      LabReference("Phos", "Phosphorus", "mg/dL", 2.5, 4.5, 1.0, 8.0, panel="BMP"),
 }
+
 
 
 class LabEngine:

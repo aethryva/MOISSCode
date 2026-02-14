@@ -399,21 +399,773 @@ DRUG_DATABASE: Dict[str, DrugProfile] = {
         bioavailability=1.0,
         onset_min=15.0,
         peak_min=60.0,
-        half_life_min=60.0,     # 1 hour
-        duration_min=360.0,     # 6 hours
+        half_life_min=60.0,
+        duration_min=360.0,
         standard_dose=0.1,
         dose_unit="units/kg",
         max_dose=0.3,
         min_dose=0.05,
         toxic_dose=1.0,
         contraindications=["hypoglycemia"],
-        interactions={
-            "Beta_blockers": "MODERATE",
-            "Thiazides": "MODERATE",
-        },
-        route="IV",
-        metabolism="hepatic/renal",
-        excretion="renal"
+        interactions={"Beta_blockers": "MODERATE", "Thiazides": "MODERATE"},
+        route="IV", metabolism="hepatic/renal", excretion="renal"
+    ),
+
+    # ─── ANTIBIOTICS (v3.0 expansion) ─────────────────────
+    "Ceftriaxone": DrugProfile(
+        name="Ceftriaxone", category="antibiotic", bioavailability=1.0,
+        onset_min=30.0, peak_min=120.0, half_life_min=480.0, duration_min=1440.0,
+        standard_dose=1000.0, dose_unit="mg", max_dose=4000.0, min_dose=250.0, toxic_dose=8000.0,
+        contraindications=["cephalosporin_allergy", "neonatal_hyperbilirubinemia"],
+        interactions={"Calcium_IV": "SEVERE", "Warfarin": "MODERATE"},
+        route="IV", metabolism="minimal", excretion="renal/biliary"
+    ),
+    "Meropenem": DrugProfile(
+        name="Meropenem", category="antibiotic", bioavailability=1.0,
+        onset_min=15.0, peak_min=60.0, half_life_min=60.0, duration_min=480.0,
+        standard_dose=1000.0, dose_unit="mg", max_dose=6000.0, min_dose=500.0, toxic_dose=12000.0,
+        contraindications=["carbapenem_allergy"],
+        interactions={"Valproic_Acid": "SEVERE", "Probenecid": "MODERATE"},
+        renal_adjust=True, route="IV", metabolism="renal", excretion="renal"
+    ),
+    "Piperacillin_Tazobactam": DrugProfile(
+        name="Piperacillin_Tazobactam", category="antibiotic", bioavailability=1.0,
+        onset_min=15.0, peak_min=30.0, half_life_min=60.0, duration_min=480.0,
+        standard_dose=4500.0, dose_unit="mg", max_dose=18000.0, min_dose=2250.0, toxic_dose=36000.0,
+        contraindications=["penicillin_allergy"],
+        interactions={"Methotrexate": "MAJOR", "Vancomycin": "MONITOR", "Heparin": "MODERATE"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Azithromycin": DrugProfile(
+        name="Azithromycin", category="antibiotic", bioavailability=0.37,
+        onset_min=120.0, peak_min=180.0, half_life_min=4080.0, duration_min=14400.0,
+        standard_dose=500.0, dose_unit="mg", max_dose=2000.0, min_dose=250.0, toxic_dose=4000.0,
+        contraindications=["macrolide_allergy", "QT_prolongation"],
+        interactions={"Warfarin": "MODERATE", "Digoxin": "MODERATE", "Amiodarone": "MAJOR"},
+        route="PO", metabolism="hepatic", excretion="biliary"
+    ),
+    "Levofloxacin": DrugProfile(
+        name="Levofloxacin", category="antibiotic", bioavailability=0.99,
+        onset_min=60.0, peak_min=120.0, half_life_min=480.0, duration_min=1440.0,
+        standard_dose=750.0, dose_unit="mg", max_dose=750.0, min_dose=250.0, toxic_dose=1500.0,
+        contraindications=["fluoroquinolone_allergy", "myasthenia_gravis", "tendon_rupture_history"],
+        interactions={"Warfarin": "MAJOR", "Theophylline": "MODERATE", "NSAIDs": "MODERATE"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Ciprofloxacin": DrugProfile(
+        name="Ciprofloxacin", category="antibiotic", bioavailability=0.70,
+        onset_min=60.0, peak_min=120.0, half_life_min=240.0, duration_min=720.0,
+        standard_dose=400.0, dose_unit="mg", max_dose=1200.0, min_dose=200.0, toxic_dose=2400.0,
+        contraindications=["fluoroquinolone_allergy", "myasthenia_gravis"],
+        interactions={"Theophylline": "MAJOR", "Warfarin": "MAJOR", "Tizanidine": "SEVERE"},
+        renal_adjust=True, route="IV", metabolism="hepatic_CYP1A2", excretion="renal"
+    ),
+    "Gentamicin": DrugProfile(
+        name="Gentamicin", category="antibiotic", bioavailability=1.0,
+        onset_min=30.0, peak_min=60.0, half_life_min=120.0, duration_min=480.0,
+        standard_dose=5.0, dose_unit="mg/kg", max_dose=7.0, min_dose=1.0, toxic_dose=10.0,
+        contraindications=["aminoglycoside_allergy", "myasthenia_gravis"],
+        interactions={"Vancomycin": "MAJOR", "Furosemide": "MAJOR", "Neuromuscular_blockers": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Metronidazole": DrugProfile(
+        name="Metronidazole", category="antibiotic", bioavailability=0.90,
+        onset_min=60.0, peak_min=120.0, half_life_min=480.0, duration_min=480.0,
+        standard_dose=500.0, dose_unit="mg", max_dose=4000.0, min_dose=250.0, toxic_dose=8000.0,
+        contraindications=["first_trimester_pregnancy"],
+        interactions={"Alcohol": "SEVERE", "Warfarin": "MAJOR", "Lithium": "MAJOR"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Doxycycline": DrugProfile(
+        name="Doxycycline", category="antibiotic", bioavailability=0.93,
+        onset_min=120.0, peak_min=180.0, half_life_min=1080.0, duration_min=1440.0,
+        standard_dose=100.0, dose_unit="mg", max_dose=200.0, min_dose=100.0, toxic_dose=600.0,
+        contraindications=["pregnancy", "children_under_8"],
+        interactions={"Warfarin": "MODERATE", "Antacids": "MODERATE", "Isotretinoin": "MAJOR"},
+        route="PO", metabolism="hepatic", excretion="fecal/renal"
+    ),
+    "Fluconazole": DrugProfile(
+        name="Fluconazole", category="antifungal", bioavailability=0.90,
+        onset_min=60.0, peak_min=120.0, half_life_min=1800.0, duration_min=1440.0,
+        standard_dose=400.0, dose_unit="mg", max_dose=800.0, min_dose=100.0, toxic_dose=1600.0,
+        contraindications=["azole_allergy"],
+        interactions={"Warfarin": "SEVERE", "Phenytoin": "MAJOR", "Cyclosporine": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="hepatic_CYP2C9", excretion="renal"
+    ),
+    "Amphotericin_B": DrugProfile(
+        name="Amphotericin_B", category="antifungal", bioavailability=1.0,
+        onset_min=60.0, peak_min=120.0, half_life_min=10080.0, duration_min=1440.0,
+        standard_dose=0.5, dose_unit="mg/kg", max_dose=1.5, min_dose=0.25, toxic_dose=3.0,
+        contraindications=["renal_failure"],
+        interactions={"Aminoglycosides": "SEVERE", "Cyclosporine": "MAJOR", "Digoxin": "MAJOR"},
+        route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Caspofungin": DrugProfile(
+        name="Caspofungin", category="antifungal", bioavailability=1.0,
+        onset_min=60.0, peak_min=120.0, half_life_min=600.0, duration_min=1440.0,
+        standard_dose=50.0, dose_unit="mg", max_dose=70.0, min_dose=35.0, toxic_dose=140.0,
+        contraindications=["echinocandin_allergy"],
+        interactions={"Cyclosporine": "MAJOR", "Rifampin": "MODERATE"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic", excretion="renal/fecal"
+    ),
+    "Linezolid": DrugProfile(
+        name="Linezolid", category="antibiotic", bioavailability=1.0,
+        onset_min=60.0, peak_min=120.0, half_life_min=300.0, duration_min=720.0,
+        standard_dose=600.0, dose_unit="mg", max_dose=1200.0, min_dose=600.0, toxic_dose=2400.0,
+        contraindications=["MAO_inhibitor_use", "uncontrolled_hypertension"],
+        interactions={"SSRIs": "SEVERE", "MAO_inhibitors": "SEVERE", "Tyramine_foods": "MAJOR"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Daptomycin": DrugProfile(
+        name="Daptomycin", category="antibiotic", bioavailability=1.0,
+        onset_min=30.0, peak_min=60.0, half_life_min=480.0, duration_min=1440.0,
+        standard_dose=6.0, dose_unit="mg/kg", max_dose=10.0, min_dose=4.0, toxic_dose=15.0,
+        contraindications=["pneumonia"],
+        interactions={"Statins": "MAJOR", "Warfarin": "MONITOR"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Cefazolin": DrugProfile(
+        name="Cefazolin", category="antibiotic", bioavailability=1.0,
+        onset_min=15.0, peak_min=30.0, half_life_min=108.0, duration_min=480.0,
+        standard_dose=1000.0, dose_unit="mg", max_dose=6000.0, min_dose=500.0, toxic_dose=12000.0,
+        contraindications=["cephalosporin_allergy"],
+        interactions={"Probenecid": "MODERATE", "Warfarin": "MODERATE"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Cefepime": DrugProfile(
+        name="Cefepime", category="antibiotic", bioavailability=1.0,
+        onset_min=15.0, peak_min=60.0, half_life_min=120.0, duration_min=720.0,
+        standard_dose=2000.0, dose_unit="mg", max_dose=6000.0, min_dose=500.0, toxic_dose=12000.0,
+        contraindications=["cephalosporin_allergy"],
+        interactions={"Aminoglycosides": "MODERATE", "Furosemide": "MODERATE"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "TMP_SMX": DrugProfile(
+        name="TMP_SMX", category="antibiotic", bioavailability=0.95,
+        onset_min=60.0, peak_min=120.0, half_life_min=600.0, duration_min=720.0,
+        standard_dose=160.0, dose_unit="mg", max_dose=320.0, min_dose=80.0, toxic_dose=960.0,
+        contraindications=["sulfonamide_allergy", "megaloblastic_anemia", "severe_renal_failure"],
+        interactions={"Warfarin": "MAJOR", "Methotrexate": "SEVERE", "ACE_inhibitors": "MAJOR"},
+        renal_adjust=True, route="PO", metabolism="hepatic", excretion="renal"
+    ),
+    "Clindamycin": DrugProfile(
+        name="Clindamycin", category="antibiotic", bioavailability=0.90,
+        onset_min=30.0, peak_min=60.0, half_life_min=150.0, duration_min=480.0,
+        standard_dose=600.0, dose_unit="mg", max_dose=2700.0, min_dose=150.0, toxic_dose=4800.0,
+        contraindications=["C_diff_history"],
+        interactions={"Neuromuscular_blockers": "MAJOR", "Erythromycin": "MAJOR"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP3A4", excretion="renal/biliary"
+    ),
+    "Colistin": DrugProfile(
+        name="Colistin", category="antibiotic", bioavailability=1.0,
+        onset_min=30.0, peak_min=120.0, half_life_min=300.0, duration_min=720.0,
+        standard_dose=2.5, dose_unit="mg/kg", max_dose=5.0, min_dose=1.5, toxic_dose=7.5,
+        contraindications=["myasthenia_gravis"],
+        interactions={"Aminoglycosides": "SEVERE", "Neuromuscular_blockers": "MAJOR", "Vancomycin": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Rifampin": DrugProfile(
+        name="Rifampin", category="antibiotic", bioavailability=0.93,
+        onset_min=120.0, peak_min=180.0, half_life_min=210.0, duration_min=1440.0,
+        standard_dose=600.0, dose_unit="mg", max_dose=600.0, min_dose=300.0, toxic_dose=1200.0,
+        contraindications=["jaundice", "concurrent_protease_inhibitors"],
+        interactions={"Warfarin": "SEVERE", "Cyclosporine": "SEVERE", "Oral_contraceptives": "SEVERE",
+                      "Methadone": "SEVERE", "HIV_protease_inhibitors": "SEVERE"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic", excretion="biliary"
+    ),
+
+    # ─── CARDIOVASCULAR (v3.0 expansion) ──────────────────
+    "Amiodarone": DrugProfile(
+        name="Amiodarone", category="antiarrhythmic", bioavailability=0.50,
+        onset_min=120.0, peak_min=420.0, half_life_min=57600.0, duration_min=43200.0,
+        standard_dose=200.0, dose_unit="mg", max_dose=400.0, min_dose=100.0, toxic_dose=800.0,
+        contraindications=["sinus_node_disease", "heart_block", "thyroid_disease"],
+        interactions={"Warfarin": "SEVERE", "Digoxin": "SEVERE", "Simvastatin": "SEVERE",
+                      "Cyclosporine": "MAJOR", "Fentanyl": "MAJOR"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP3A4", excretion="biliary"
+    ),
+    "Diltiazem": DrugProfile(
+        name="Diltiazem", category="calcium_channel_blocker", bioavailability=0.40,
+        onset_min=3.0, peak_min=15.0, half_life_min=210.0, duration_min=600.0,
+        standard_dose=0.25, dose_unit="mg/kg", max_dose=0.35, min_dose=0.15, toxic_dose=1.0,
+        contraindications=["heart_block", "severe_hypotension", "WPW_syndrome"],
+        interactions={"Beta_blockers": "MAJOR", "Digoxin": "MAJOR", "Simvastatin": "MAJOR"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP3A4", excretion="renal"
+    ),
+    "Metoprolol": DrugProfile(
+        name="Metoprolol", category="beta_blocker", bioavailability=0.50,
+        onset_min=5.0, peak_min=20.0, half_life_min=210.0, duration_min=360.0,
+        standard_dose=5.0, dose_unit="mg", max_dose=15.0, min_dose=2.5, toxic_dose=50.0,
+        contraindications=["severe_bradycardia", "heart_block", "cardiogenic_shock", "decompensated_HF"],
+        interactions={"Verapamil": "SEVERE", "Clonidine": "MAJOR", "Digoxin": "MODERATE"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP2D6", excretion="renal"
+    ),
+    "Atenolol": DrugProfile(
+        name="Atenolol", category="beta_blocker", bioavailability=0.50,
+        onset_min=60.0, peak_min=180.0, half_life_min=420.0, duration_min=1440.0,
+        standard_dose=50.0, dose_unit="mg", max_dose=100.0, min_dose=25.0, toxic_dose=300.0,
+        contraindications=["severe_bradycardia", "heart_block", "cardiogenic_shock"],
+        interactions={"Verapamil": "SEVERE", "Clonidine": "MAJOR"},
+        renal_adjust=True, route="PO", metabolism="minimal", excretion="renal"
+    ),
+    "Lisinopril": DrugProfile(
+        name="Lisinopril", category="ACE_inhibitor", bioavailability=0.25,
+        onset_min=60.0, peak_min=420.0, half_life_min=720.0, duration_min=1440.0,
+        standard_dose=10.0, dose_unit="mg", max_dose=40.0, min_dose=2.5, toxic_dose=80.0,
+        contraindications=["angioedema_history", "bilateral_renal_artery_stenosis", "pregnancy"],
+        interactions={"Potassium_sparing_diuretics": "SEVERE", "Lithium": "MAJOR", "NSAIDs": "MODERATE"},
+        renal_adjust=True, route="PO", metabolism="none", excretion="renal"
+    ),
+    "Amlodipine": DrugProfile(
+        name="Amlodipine", category="calcium_channel_blocker", bioavailability=0.64,
+        onset_min=360.0, peak_min=600.0, half_life_min=2160.0, duration_min=1440.0,
+        standard_dose=5.0, dose_unit="mg", max_dose=10.0, min_dose=2.5, toxic_dose=30.0,
+        contraindications=["severe_aortic_stenosis", "cardiogenic_shock"],
+        interactions={"Simvastatin": "MAJOR", "Cyclosporine": "MODERATE"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic_CYP3A4", excretion="renal"
+    ),
+    "Nitroglycerin": DrugProfile(
+        name="Nitroglycerin", category="vasodilator", bioavailability=1.0,
+        onset_min=1.0, peak_min=5.0, half_life_min=3.0, duration_min=30.0,
+        standard_dose=5.0, dose_unit="mcg/min", max_dose=200.0, min_dose=5.0, toxic_dose=400.0,
+        contraindications=["severe_hypotension", "PDE5_inhibitor_use", "right_ventricular_MI"],
+        interactions={"Sildenafil": "SEVERE", "Tadalafil": "SEVERE", "Alteplase": "MODERATE"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Dobutamine": DrugProfile(
+        name="Dobutamine", category="inotrope", bioavailability=1.0,
+        onset_min=2.0, peak_min=10.0, half_life_min=2.0, duration_min=10.0,
+        standard_dose=5.0, dose_unit="mcg/kg/min", max_dose=20.0, min_dose=2.0, toxic_dose=40.0,
+        contraindications=["IHSS", "severe_aortic_stenosis"],
+        interactions={"Beta_blockers": "MAJOR", "MAO_inhibitors": "SEVERE"},
+        route="IV", metabolism="COMT/MAO", excretion="renal"
+    ),
+    "Milrinone": DrugProfile(
+        name="Milrinone", category="inotrope", bioavailability=1.0,
+        onset_min=5.0, peak_min=15.0, half_life_min=144.0, duration_min=360.0,
+        standard_dose=0.375, dose_unit="mcg/kg/min", max_dose=0.75, min_dose=0.125, toxic_dose=1.5,
+        contraindications=["severe_aortic_stenosis"],
+        interactions={"Furosemide": "MODERATE"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Digoxin": DrugProfile(
+        name="Digoxin", category="cardiac_glycoside", bioavailability=0.75,
+        onset_min=30.0, peak_min=120.0, half_life_min=2160.0, duration_min=4320.0,
+        standard_dose=0.25, dose_unit="mg", max_dose=0.5, min_dose=0.0625, toxic_dose=2.0,
+        contraindications=["VT", "VF", "hypokalemia"],
+        interactions={"Amiodarone": "SEVERE", "Verapamil": "MAJOR", "Quinidine": "SEVERE",
+                      "Spironolactone": "MODERATE"},
+        renal_adjust=True, route="PO", metabolism="minimal", excretion="renal"
+    ),
+    "Hydralazine": DrugProfile(
+        name="Hydralazine", category="vasodilator", bioavailability=0.35,
+        onset_min=10.0, peak_min=30.0, half_life_min=180.0, duration_min=360.0,
+        standard_dose=10.0, dose_unit="mg", max_dose=40.0, min_dose=5.0, toxic_dose=100.0,
+        contraindications=["coronary_artery_disease", "mitral_valve_rheumatic"],
+        interactions={"Beta_blockers": "MODERATE", "Diuretics": "MODERATE"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Nitroprusside": DrugProfile(
+        name="Nitroprusside", category="vasodilator", bioavailability=1.0,
+        onset_min=0.5, peak_min=2.0, half_life_min=2.0, duration_min=10.0,
+        standard_dose=0.3, dose_unit="mcg/kg/min", max_dose=10.0, min_dose=0.3, toxic_dose=15.0,
+        contraindications=["compensatory_hypertension", "inadequate_cerebral_perfusion"],
+        interactions={"Sildenafil": "SEVERE"},
+        hepatic_adjust=True, route="IV", metabolism="RBC/hepatic", excretion="renal"
+    ),
+    "Losartan": DrugProfile(
+        name="Losartan", category="ARB", bioavailability=0.33,
+        onset_min=60.0, peak_min=180.0, half_life_min=120.0, duration_min=1440.0,
+        standard_dose=50.0, dose_unit="mg", max_dose=100.0, min_dose=25.0, toxic_dose=300.0,
+        contraindications=["pregnancy", "bilateral_renal_artery_stenosis"],
+        interactions={"Potassium_sparing_diuretics": "MAJOR", "Lithium": "MAJOR", "NSAIDs": "MODERATE"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic_CYP2C9/3A4", excretion="renal/biliary"
+    ),
+    "Enalapril": DrugProfile(
+        name="Enalapril", category="ACE_inhibitor", bioavailability=0.60,
+        onset_min=60.0, peak_min=240.0, half_life_min=660.0, duration_min=1440.0,
+        standard_dose=5.0, dose_unit="mg", max_dose=40.0, min_dose=1.25, toxic_dose=80.0,
+        contraindications=["angioedema_history", "pregnancy"],
+        interactions={"Potassium_sparing_diuretics": "SEVERE", "Lithium": "MAJOR"},
+        renal_adjust=True, route="PO", metabolism="hepatic", excretion="renal"
+    ),
+
+    # ─── ANALGESICS (v3.0 expansion) ─────────────────────
+    "Hydromorphone": DrugProfile(
+        name="Hydromorphone", category="analgesic", bioavailability=1.0,
+        onset_min=5.0, peak_min=15.0, half_life_min=150.0, duration_min=240.0,
+        standard_dose=0.5, dose_unit="mg", max_dose=4.0, min_dose=0.2, toxic_dose=10.0,
+        contraindications=["respiratory_depression", "paralytic_ileus"],
+        interactions={"Benzodiazepines": "SEVERE", "MAO_inhibitors": "SEVERE"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Remifentanil": DrugProfile(
+        name="Remifentanil", category="analgesic", bioavailability=1.0,
+        onset_min=1.0, peak_min=3.0, half_life_min=6.0, duration_min=10.0,
+        standard_dose=0.1, dose_unit="mcg/kg/min", max_dose=0.5, min_dose=0.025, toxic_dose=2.0,
+        contraindications=["epidural_use"],
+        interactions={"Benzodiazepines": "SEVERE", "Propofol": "MAJOR"},
+        route="IV", metabolism="plasma_esterases", excretion="renal"
+    ),
+    "Acetaminophen": DrugProfile(
+        name="Acetaminophen", category="analgesic", bioavailability=0.85,
+        onset_min=30.0, peak_min=60.0, half_life_min=120.0, duration_min=360.0,
+        standard_dose=1000.0, dose_unit="mg", max_dose=4000.0, min_dose=325.0, toxic_dose=10000.0,
+        contraindications=["severe_hepatic_impairment"],
+        interactions={"Warfarin": "MODERATE", "Isoniazid": "MAJOR"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic", excretion="renal"
+    ),
+    "Ketorolac": DrugProfile(
+        name="Ketorolac", category="NSAID", bioavailability=1.0,
+        onset_min=10.0, peak_min=30.0, half_life_min=300.0, duration_min=360.0,
+        standard_dose=30.0, dose_unit="mg", max_dose=120.0, min_dose=15.0, toxic_dose=240.0,
+        contraindications=["active_GI_bleeding", "renal_impairment", "NSAID_allergy", "perioperative_CABG"],
+        interactions={"Anticoagulants": "SEVERE", "Lithium": "MAJOR", "Methotrexate": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Lorazepam": DrugProfile(
+        name="Lorazepam", category="sedative", bioavailability=0.90,
+        onset_min=5.0, peak_min=15.0, half_life_min=720.0, duration_min=480.0,
+        standard_dose=0.5, dose_unit="mg", max_dose=4.0, min_dose=0.5, toxic_dose=10.0,
+        contraindications=["acute_angle_glaucoma", "severe_respiratory_insufficiency"],
+        interactions={"Opioids": "SEVERE", "Propofol": "MAJOR", "Alcohol": "SEVERE"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_glucuronidation", excretion="renal"
+    ),
+    "Gabapentin": DrugProfile(
+        name="Gabapentin", category="anticonvulsant_analgesic", bioavailability=0.60,
+        onset_min=120.0, peak_min=180.0, half_life_min=360.0, duration_min=480.0,
+        standard_dose=300.0, dose_unit="mg", max_dose=3600.0, min_dose=100.0, toxic_dose=8000.0,
+        contraindications=[],
+        interactions={"Opioids": "MAJOR", "Antacids": "MODERATE"},
+        renal_adjust=True, route="PO", metabolism="none", excretion="renal"
+    ),
+
+    # ─── ANTICOAGULANTS (v3.0 expansion) ──────────────────
+    "Enoxaparin": DrugProfile(
+        name="Enoxaparin", category="anticoagulant", bioavailability=0.92,
+        onset_min=180.0, peak_min=240.0, half_life_min=270.0, duration_min=720.0,
+        standard_dose=1.0, dose_unit="mg/kg", max_dose=1.5, min_dose=0.5, toxic_dose=3.0,
+        contraindications=["active_bleeding", "HIT_history", "severe_thrombocytopenia"],
+        interactions={"NSAIDs": "MAJOR", "Warfarin": "MAJOR", "Thrombolytics": "SEVERE"},
+        renal_adjust=True, route="SC", metabolism="hepatic", excretion="renal"
+    ),
+    "Warfarin": DrugProfile(
+        name="Warfarin", category="anticoagulant", bioavailability=0.95,
+        onset_min=1440.0, peak_min=4320.0, half_life_min=2400.0, duration_min=7200.0,
+        standard_dose=5.0, dose_unit="mg", max_dose=10.0, min_dose=1.0, toxic_dose=20.0,
+        contraindications=["active_bleeding", "pregnancy", "unsupervised_dementia"],
+        interactions={"Amiodarone": "SEVERE", "Rifampin": "SEVERE", "NSAIDs": "MAJOR",
+                      "Fluconazole": "SEVERE", "Metronidazole": "MAJOR"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic_CYP2C9", excretion="renal"
+    ),
+    "Apixaban": DrugProfile(
+        name="Apixaban", category="anticoagulant", bioavailability=0.50,
+        onset_min=180.0, peak_min=240.0, half_life_min=720.0, duration_min=720.0,
+        standard_dose=5.0, dose_unit="mg", max_dose=10.0, min_dose=2.5, toxic_dose=20.0,
+        contraindications=["active_bleeding", "prosthetic_heart_valve"],
+        interactions={"Ketoconazole": "MAJOR", "Rifampin": "MAJOR"},
+        route="PO", metabolism="hepatic_CYP3A4", excretion="renal/fecal"
+    ),
+    "Rivaroxaban": DrugProfile(
+        name="Rivaroxaban", category="anticoagulant", bioavailability=0.80,
+        onset_min=120.0, peak_min=180.0, half_life_min=660.0, duration_min=1440.0,
+        standard_dose=20.0, dose_unit="mg", max_dose=20.0, min_dose=10.0, toxic_dose=40.0,
+        contraindications=["active_bleeding", "severe_hepatic_impairment"],
+        interactions={"Ketoconazole": "MAJOR", "Rifampin": "MAJOR", "NSAIDs": "MODERATE"},
+        renal_adjust=True, route="PO", metabolism="hepatic_CYP3A4", excretion="renal"
+    ),
+    "Alteplase": DrugProfile(
+        name="Alteplase", category="thrombolytic", bioavailability=1.0,
+        onset_min=5.0, peak_min=30.0, half_life_min=5.0, duration_min=60.0,
+        standard_dose=0.9, dose_unit="mg/kg", max_dose=90.0, min_dose=0.5, toxic_dose=150.0,
+        contraindications=["active_bleeding", "recent_surgery", "intracranial_hemorrhage", "aortic_dissection"],
+        interactions={"Heparin": "SEVERE", "Anticoagulants": "SEVERE", "Antiplatelet_agents": "MAJOR"},
+        route="IV", metabolism="hepatic", excretion="hepatic"
+    ),
+    "Clopidogrel": DrugProfile(
+        name="Clopidogrel", category="antiplatelet", bioavailability=0.50,
+        onset_min=120.0, peak_min=240.0, half_life_min=480.0, duration_min=7200.0,
+        standard_dose=75.0, dose_unit="mg", max_dose=300.0, min_dose=75.0, toxic_dose=600.0,
+        contraindications=["active_bleeding"],
+        interactions={"Omeprazole": "MAJOR", "NSAIDs": "MAJOR", "Warfarin": "MAJOR"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic_CYP2C19", excretion="renal/fecal"
+    ),
+    "Ticagrelor": DrugProfile(
+        name="Ticagrelor", category="antiplatelet", bioavailability=0.36,
+        onset_min=60.0, peak_min=120.0, half_life_min=420.0, duration_min=720.0,
+        standard_dose=90.0, dose_unit="mg", max_dose=180.0, min_dose=60.0, toxic_dose=360.0,
+        contraindications=["active_bleeding", "intracranial_hemorrhage_history", "severe_hepatic_impairment"],
+        interactions={"Ketoconazole": "MAJOR", "Rifampin": "MAJOR", "Simvastatin": "MODERATE",
+                      "Digoxin": "MODERATE"},
+        route="PO", metabolism="hepatic_CYP3A4", excretion="biliary/renal"
+    ),
+    "Bivalirudin": DrugProfile(
+        name="Bivalirudin", category="anticoagulant", bioavailability=1.0,
+        onset_min=2.0, peak_min=5.0, half_life_min=25.0, duration_min=60.0,
+        standard_dose=0.75, dose_unit="mg/kg", max_dose=1.75, min_dose=0.1, toxic_dose=5.0,
+        contraindications=["active_bleeding"],
+        interactions={"Heparin": "MAJOR", "Thrombolytics": "SEVERE"},
+        renal_adjust=True, route="IV", metabolism="proteolytic", excretion="renal"
+    ),
+
+    # ─── NEURO / PSYCH (v3.0 expansion) ──────────────────
+    "Levetiracetam": DrugProfile(
+        name="Levetiracetam", category="anticonvulsant", bioavailability=1.0,
+        onset_min=30.0, peak_min=60.0, half_life_min=420.0, duration_min=720.0,
+        standard_dose=500.0, dose_unit="mg", max_dose=3000.0, min_dose=250.0, toxic_dose=6000.0,
+        contraindications=[], interactions={},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Phenytoin": DrugProfile(
+        name="Phenytoin", category="anticonvulsant", bioavailability=0.90,
+        onset_min=30.0, peak_min=120.0, half_life_min=1320.0, duration_min=1440.0,
+        standard_dose=15.0, dose_unit="mg/kg", max_dose=20.0, min_dose=10.0, toxic_dose=30.0,
+        contraindications=["sinus_bradycardia", "heart_block", "Adams-Stokes_syndrome"],
+        interactions={"Warfarin": "MAJOR", "Carbamazepine": "MAJOR", "Valproic_Acid": "MAJOR"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP2C9/2C19", excretion="renal"
+    ),
+    "Valproic_Acid": DrugProfile(
+        name="Valproic_Acid", category="anticonvulsant", bioavailability=1.0,
+        onset_min=15.0, peak_min=60.0, half_life_min=660.0, duration_min=720.0,
+        standard_dose=20.0, dose_unit="mg/kg", max_dose=60.0, min_dose=10.0, toxic_dose=100.0,
+        contraindications=["hepatic_disease", "urea_cycle_disorders", "pregnancy"],
+        interactions={"Meropenem": "SEVERE", "Lamotrigine": "MAJOR", "Phenobarbital": "MAJOR"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Haloperidol": DrugProfile(
+        name="Haloperidol", category="antipsychotic", bioavailability=0.60,
+        onset_min=10.0, peak_min=30.0, half_life_min=1080.0, duration_min=1440.0,
+        standard_dose=2.0, dose_unit="mg", max_dose=20.0, min_dose=0.5, toxic_dose=40.0,
+        contraindications=["Parkinson_disease", "QT_prolongation", "CNS_depression"],
+        interactions={"Lithium": "MAJOR", "Carbamazepine": "MODERATE", "QT_prolonging_drugs": "SEVERE"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP3A4/2D6", excretion="renal"
+    ),
+    "Olanzapine": DrugProfile(
+        name="Olanzapine", category="antipsychotic", bioavailability=0.60,
+        onset_min=15.0, peak_min=30.0, half_life_min=1800.0, duration_min=1440.0,
+        standard_dose=5.0, dose_unit="mg", max_dose=20.0, min_dose=2.5, toxic_dose=40.0,
+        contraindications=["benzodiazepine_concurrent_IM"],
+        interactions={"Carbamazepine": "MAJOR", "Fluvoxamine": "MAJOR", "Diazepam": "MODERATE"},
+        hepatic_adjust=True, route="IM", metabolism="hepatic_CYP1A2/2D6", excretion="renal"
+    ),
+    "Lacosamide": DrugProfile(
+        name="Lacosamide", category="anticonvulsant", bioavailability=1.0,
+        onset_min=30.0, peak_min=60.0, half_life_min=780.0, duration_min=720.0,
+        standard_dose=200.0, dose_unit="mg", max_dose=400.0, min_dose=50.0, toxic_dose=800.0,
+        contraindications=["second_or_third_degree_heart_block"],
+        interactions={"Carbamazepine": "MODERATE", "PR_prolonging_drugs": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="hepatic_CYP2C19", excretion="renal"
+    ),
+    "Carbamazepine": DrugProfile(
+        name="Carbamazepine", category="anticonvulsant", bioavailability=0.85,
+        onset_min=120.0, peak_min=360.0, half_life_min=1080.0, duration_min=720.0,
+        standard_dose=200.0, dose_unit="mg", max_dose=1600.0, min_dose=100.0, toxic_dose=3200.0,
+        contraindications=["bone_marrow_suppression", "MAO_inhibitor_use", "HLA_B1502_positive"],
+        interactions={"Warfarin": "MAJOR", "Phenytoin": "MAJOR", "Oral_contraceptives": "MAJOR"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic_CYP3A4", excretion="renal"
+    ),
+    "Quetiapine": DrugProfile(
+        name="Quetiapine", category="antipsychotic", bioavailability=0.09,
+        onset_min=60.0, peak_min=90.0, half_life_min=420.0, duration_min=720.0,
+        standard_dose=25.0, dose_unit="mg", max_dose=800.0, min_dose=25.0, toxic_dose=1600.0,
+        contraindications=["dementia_related_psychosis"],
+        interactions={"Ketoconazole": "MAJOR", "Carbamazepine": "MAJOR", "QT_prolonging_drugs": "MAJOR"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic_CYP3A4", excretion="renal"
+    ),
+
+    # ─── GI / ENDOCRINE (v3.0 expansion) ─────────────────
+    "Omeprazole": DrugProfile(
+        name="Omeprazole", category="PPI", bioavailability=0.40,
+        onset_min=60.0, peak_min=120.0, half_life_min=60.0, duration_min=1440.0,
+        standard_dose=40.0, dose_unit="mg", max_dose=80.0, min_dose=20.0, toxic_dose=160.0,
+        contraindications=["rilpivirine_use"],
+        interactions={"Clopidogrel": "MAJOR", "Methotrexate": "MAJOR", "Diazepam": "MODERATE"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP2C19/3A4", excretion="renal"
+    ),
+    "Pantoprazole": DrugProfile(
+        name="Pantoprazole", category="PPI", bioavailability=0.77,
+        onset_min=120.0, peak_min=150.0, half_life_min=60.0, duration_min=1440.0,
+        standard_dose=40.0, dose_unit="mg", max_dose=80.0, min_dose=20.0, toxic_dose=240.0,
+        contraindications=["rilpivirine_use"],
+        interactions={"Methotrexate": "MAJOR", "Warfarin": "MODERATE"},
+        route="IV", metabolism="hepatic_CYP2C19", excretion="renal"
+    ),
+    "Ondansetron": DrugProfile(
+        name="Ondansetron", category="antiemetic", bioavailability=0.60,
+        onset_min=5.0, peak_min=15.0, half_life_min=210.0, duration_min=480.0,
+        standard_dose=4.0, dose_unit="mg", max_dose=16.0, min_dose=4.0, toxic_dose=32.0,
+        contraindications=["QT_prolongation", "congenital_long_QT"],
+        interactions={"Apomorphine": "SEVERE", "QT_prolonging_drugs": "MAJOR"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP3A4/1A2/2D6", excretion="renal"
+    ),
+    "Hydrocortisone": DrugProfile(
+        name="Hydrocortisone", category="corticosteroid", bioavailability=1.0,
+        onset_min=30.0, peak_min=60.0, half_life_min=90.0, duration_min=480.0,
+        standard_dose=100.0, dose_unit="mg", max_dose=300.0, min_dose=25.0, toxic_dose=1000.0,
+        contraindications=["systemic_fungal_infections"],
+        interactions={"NSAIDs": "MODERATE", "Warfarin": "MODERATE", "Insulin": "MODERATE"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Methylprednisolone": DrugProfile(
+        name="Methylprednisolone", category="corticosteroid", bioavailability=1.0,
+        onset_min=30.0, peak_min=60.0, half_life_min=180.0, duration_min=1080.0,
+        standard_dose=125.0, dose_unit="mg", max_dose=1000.0, min_dose=40.0, toxic_dose=2000.0,
+        contraindications=["systemic_fungal_infections"],
+        interactions={"Ketoconazole": "MAJOR", "Warfarin": "MODERATE", "NSAIDs": "MODERATE"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Levothyroxine": DrugProfile(
+        name="Levothyroxine", category="thyroid_hormone", bioavailability=0.80,
+        onset_min=1440.0, peak_min=4320.0, half_life_min=10080.0, duration_min=7200.0,
+        standard_dose=1.6, dose_unit="mcg/kg", max_dose=300.0, min_dose=0.5, toxic_dose=500.0,
+        contraindications=["untreated_adrenal_insufficiency", "acute_MI"],
+        interactions={"Warfarin": "MAJOR", "Calcium": "MODERATE", "Iron": "MODERATE", "PPIs": "MODERATE"},
+        route="PO", metabolism="hepatic", excretion="renal/fecal"
+    ),
+    "Octreotide": DrugProfile(
+        name="Octreotide", category="somatostatin_analog", bioavailability=1.0,
+        onset_min=30.0, peak_min=60.0, half_life_min=90.0, duration_min=720.0,
+        standard_dose=50.0, dose_unit="mcg", max_dose=500.0, min_dose=25.0, toxic_dose=1000.0,
+        contraindications=[], interactions={"Cyclosporine": "MODERATE", "Insulin": "MODERATE"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Metoclopramide": DrugProfile(
+        name="Metoclopramide", category="prokinetic", bioavailability=0.80,
+        onset_min=3.0, peak_min=10.0, half_life_min=360.0, duration_min=120.0,
+        standard_dose=10.0, dose_unit="mg", max_dose=40.0, min_dose=5.0, toxic_dose=80.0,
+        contraindications=["GI_obstruction", "pheochromocytoma", "seizure_history"],
+        interactions={"Levodopa": "MAJOR", "MAO_inhibitors": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Famotidine": DrugProfile(
+        name="Famotidine", category="H2_blocker", bioavailability=0.45,
+        onset_min=30.0, peak_min=120.0, half_life_min=180.0, duration_min=720.0,
+        standard_dose=20.0, dose_unit="mg", max_dose=40.0, min_dose=10.0, toxic_dose=160.0,
+        contraindications=[], interactions={"Ketoconazole": "MODERATE", "Atazanavir": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Dexamethasone": DrugProfile(
+        name="Dexamethasone", category="corticosteroid", bioavailability=0.80,
+        onset_min=60.0, peak_min=120.0, half_life_min=2160.0, duration_min=4320.0,
+        standard_dose=4.0, dose_unit="mg", max_dose=20.0, min_dose=0.5, toxic_dose=40.0,
+        contraindications=["systemic_fungal_infections"],
+        interactions={"Warfarin": "MODERATE", "NSAIDs": "MODERATE", "Phenytoin": "MODERATE"},
+        route="IV", metabolism="hepatic_CYP3A4", excretion="renal"
+    ),
+
+    # ─── RESPIRATORY (v3.0 expansion) ────────────────────
+    "Albuterol": DrugProfile(
+        name="Albuterol", category="bronchodilator", bioavailability=0.15,
+        onset_min=5.0, peak_min=30.0, half_life_min=300.0, duration_min=360.0,
+        standard_dose=2.5, dose_unit="mg", max_dose=10.0, min_dose=1.25, toxic_dose=20.0,
+        contraindications=[],
+        interactions={"Beta_blockers": "MAJOR", "MAO_inhibitors": "MAJOR", "Digoxin": "MODERATE"},
+        route="INH", metabolism="hepatic", excretion="renal"
+    ),
+    "Ipratropium": DrugProfile(
+        name="Ipratropium", category="anticholinergic_bronchodilator", bioavailability=0.02,
+        onset_min=15.0, peak_min=120.0, half_life_min=120.0, duration_min=360.0,
+        standard_dose=0.5, dose_unit="mg", max_dose=2.0, min_dose=0.25, toxic_dose=4.0,
+        contraindications=["soy_allergy", "peanut_allergy"],
+        interactions={"Anticholinergics": "MODERATE"},
+        route="INH", metabolism="hepatic", excretion="renal"
+    ),
+    "Budesonide": DrugProfile(
+        name="Budesonide", category="inhaled_corticosteroid", bioavailability=0.10,
+        onset_min=120.0, peak_min=240.0, half_life_min=180.0, duration_min=720.0,
+        standard_dose=0.5, dose_unit="mg", max_dose=2.0, min_dose=0.25, toxic_dose=4.0,
+        contraindications=["status_asthmaticus"],
+        interactions={"Ketoconazole": "MAJOR"},
+        route="INH", metabolism="hepatic_CYP3A4", excretion="renal/fecal"
+    ),
+
+    # ─── EMERGENCY (v3.0 expansion) ──────────────────────
+    "Atropine": DrugProfile(
+        name="Atropine", category="anticholinergic", bioavailability=1.0,
+        onset_min=1.0, peak_min=3.0, half_life_min=180.0, duration_min=240.0,
+        standard_dose=0.5, dose_unit="mg", max_dose=3.0, min_dose=0.5, toxic_dose=10.0,
+        contraindications=["narrow_angle_glaucoma", "obstructive_uropathy"],
+        interactions={"Anticholinergics": "MAJOR"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Adenosine": DrugProfile(
+        name="Adenosine", category="antiarrhythmic", bioavailability=1.0,
+        onset_min=0.2, peak_min=0.5, half_life_min=0.17, duration_min=1.0,
+        standard_dose=6.0, dose_unit="mg", max_dose=12.0, min_dose=6.0, toxic_dose=24.0,
+        contraindications=["second_or_third_degree_heart_block", "sick_sinus_syndrome"],
+        interactions={"Carbamazepine": "MAJOR", "Dipyridamole": "SEVERE", "Theophylline": "MAJOR"},
+        route="IV", metabolism="RBC/endothelium", excretion="cellular"
+    ),
+    "Naloxone": DrugProfile(
+        name="Naloxone", category="opioid_antagonist", bioavailability=1.0,
+        onset_min=2.0, peak_min=5.0, half_life_min=60.0, duration_min=60.0,
+        standard_dose=0.4, dose_unit="mg", max_dose=10.0, min_dose=0.04, toxic_dose=20.0,
+        contraindications=[],
+        interactions={"Opioids": "EXPECTED"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Flumazenil": DrugProfile(
+        name="Flumazenil", category="benzodiazepine_antagonist", bioavailability=1.0,
+        onset_min=1.0, peak_min=5.0, half_life_min=60.0, duration_min=60.0,
+        standard_dose=0.2, dose_unit="mg", max_dose=3.0, min_dose=0.1, toxic_dose=5.0,
+        contraindications=["chronic_benzodiazepine_use", "TCA_overdose", "seizure_history"],
+        interactions={"Benzodiazepines": "EXPECTED"},
+        route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Calcium_Chloride": DrugProfile(
+        name="Calcium_Chloride", category="electrolyte", bioavailability=1.0,
+        onset_min=1.0, peak_min=5.0, half_life_min=30.0, duration_min=120.0,
+        standard_dose=1000.0, dose_unit="mg", max_dose=3000.0, min_dose=500.0, toxic_dose=6000.0,
+        contraindications=["hypercalcemia", "digoxin_toxicity"],
+        interactions={"Digoxin": "SEVERE", "Ceftriaxone": "SEVERE"},
+        route="IV", metabolism="none", excretion="renal"
+    ),
+    "Sodium_Bicarbonate": DrugProfile(
+        name="Sodium_Bicarbonate", category="alkalinizer", bioavailability=1.0,
+        onset_min=2.0, peak_min=5.0, half_life_min=30.0, duration_min=120.0,
+        standard_dose=1.0, dose_unit="mEq/kg", max_dose=200.0, min_dose=0.5, toxic_dose=400.0,
+        contraindications=["metabolic_alkalosis", "hypocalcemia"],
+        interactions={"Aspirin": "MAJOR", "Lithium": "MAJOR"},
+        route="IV", metabolism="none", excretion="renal"
+    ),
+    "Magnesium_Sulfate": DrugProfile(
+        name="Magnesium_Sulfate", category="electrolyte", bioavailability=1.0,
+        onset_min=5.0, peak_min=30.0, half_life_min=240.0, duration_min=360.0,
+        standard_dose=2000.0, dose_unit="mg", max_dose=6000.0, min_dose=1000.0, toxic_dose=10000.0,
+        contraindications=["heart_block", "myocardial_damage"],
+        interactions={"Neuromuscular_blockers": "MAJOR", "Calcium_channel_blockers": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="none", excretion="renal"
+    ),
+    "Epinephrine_IV": DrugProfile(
+        name="Epinephrine_IV", category="vasopressor", bioavailability=1.0,
+        onset_min=0.5, peak_min=2.0, half_life_min=3.0, duration_min=10.0,
+        standard_dose=1.0, dose_unit="mg", max_dose=10.0, min_dose=0.1, toxic_dose=20.0,
+        contraindications=["narrow_angle_glaucoma"],
+        interactions={"Beta_blockers": "MAJOR", "MAO_inhibitors": "SEVERE", "TCAs": "MAJOR"},
+        route="IV", metabolism="COMT/MAO", excretion="renal"
+    ),
+
+    # ─── ANTIDIABETICS (v3.0 expansion) ──────────────────
+    "Insulin_Lispro": DrugProfile(
+        name="Insulin_Lispro", category="antidiabetic", bioavailability=1.0,
+        onset_min=15.0, peak_min=60.0, half_life_min=60.0, duration_min=300.0,
+        standard_dose=0.1, dose_unit="units/kg", max_dose=0.3, min_dose=0.05, toxic_dose=1.0,
+        contraindications=["hypoglycemia"],
+        interactions={"Beta_blockers": "MODERATE", "Thiazides": "MODERATE"},
+        route="SC", metabolism="hepatic/renal", excretion="renal"
+    ),
+    "Insulin_Glargine": DrugProfile(
+        name="Insulin_Glargine", category="antidiabetic", bioavailability=1.0,
+        onset_min=120.0, peak_min=0.0, half_life_min=720.0, duration_min=1440.0,
+        standard_dose=0.2, dose_unit="units/kg", max_dose=0.5, min_dose=0.1, toxic_dose=2.0,
+        contraindications=["hypoglycemia", "diabetic_ketoacidosis"],
+        interactions={"Beta_blockers": "MODERATE", "Thiazides": "MODERATE", "Pioglitazone": "MODERATE"},
+        route="SC", metabolism="hepatic/renal", excretion="renal"
+    ),
+    "Glipizide": DrugProfile(
+        name="Glipizide", category="sulfonylurea", bioavailability=0.95,
+        onset_min=30.0, peak_min=120.0, half_life_min=240.0, duration_min=720.0,
+        standard_dose=5.0, dose_unit="mg", max_dose=40.0, min_dose=2.5, toxic_dose=80.0,
+        contraindications=["DKA", "severe_hepatic_impairment"],
+        interactions={"Fluconazole": "MAJOR", "Beta_blockers": "MODERATE", "NSAIDs": "MODERATE"},
+        hepatic_adjust=True, route="PO", metabolism="hepatic_CYP2C9", excretion="renal"
+    ),
+    "Empagliflozin": DrugProfile(
+        name="Empagliflozin", category="SGLT2_inhibitor", bioavailability=0.78,
+        onset_min=60.0, peak_min=90.0, half_life_min=780.0, duration_min=1440.0,
+        standard_dose=10.0, dose_unit="mg", max_dose=25.0, min_dose=10.0, toxic_dose=50.0,
+        contraindications=["severe_renal_impairment", "dialysis"],
+        interactions={"Diuretics": "MODERATE", "Insulin": "MODERATE"},
+        renal_adjust=True, route="PO", metabolism="hepatic_UGT", excretion="renal/fecal"
+    ),
+
+    # ─── ANTIVIRALS (v3.0 expansion) ─────────────────────
+    "Remdesivir": DrugProfile(
+        name="Remdesivir", category="antiviral", bioavailability=1.0,
+        onset_min=30.0, peak_min=60.0, half_life_min=60.0, duration_min=1440.0,
+        standard_dose=200.0, dose_unit="mg", max_dose=200.0, min_dose=100.0, toxic_dose=400.0,
+        contraindications=["eGFR_below_30"],
+        interactions={"Chloroquine": "MAJOR", "Hydroxychloroquine": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Oseltamivir": DrugProfile(
+        name="Oseltamivir", category="antiviral", bioavailability=0.80,
+        onset_min=60.0, peak_min=240.0, half_life_min=420.0, duration_min=720.0,
+        standard_dose=75.0, dose_unit="mg", max_dose=150.0, min_dose=30.0, toxic_dose=300.0,
+        contraindications=[],
+        interactions={"Live_vaccines": "MAJOR", "Warfarin": "MONITOR"},
+        renal_adjust=True, route="PO", metabolism="hepatic", excretion="renal"
+    ),
+    "Acyclovir": DrugProfile(
+        name="Acyclovir", category="antiviral", bioavailability=0.20,
+        onset_min=30.0, peak_min=60.0, half_life_min=180.0, duration_min=480.0,
+        standard_dose=10.0, dose_unit="mg/kg", max_dose=20.0, min_dose=5.0, toxic_dose=40.0,
+        contraindications=["hypersensitivity"],
+        interactions={"Probenecid": "MODERATE", "Nephrotoxic_drugs": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="minimal", excretion="renal"
+    ),
+    "Tenofovir": DrugProfile(
+        name="Tenofovir", category="antiviral", bioavailability=0.25,
+        onset_min=60.0, peak_min=120.0, half_life_min=1020.0, duration_min=1440.0,
+        standard_dose=300.0, dose_unit="mg", max_dose=300.0, min_dose=150.0, toxic_dose=600.0,
+        contraindications=[],
+        interactions={"Nephrotoxic_drugs": "MAJOR", "Didanosine": "MAJOR"},
+        renal_adjust=True, route="PO", metabolism="minimal", excretion="renal"
+    ),
+
+    # ─── IMMUNOSUPPRESSANTS / OTHERS (v3.0 expansion) ────
+    "Tacrolimus": DrugProfile(
+        name="Tacrolimus", category="immunosuppressant", bioavailability=0.25,
+        onset_min=60.0, peak_min=180.0, half_life_min=720.0, duration_min=1440.0,
+        standard_dose=0.05, dose_unit="mg/kg", max_dose=0.3, min_dose=0.01, toxic_dose=0.5,
+        contraindications=["hypersensitivity"],
+        interactions={"Ketoconazole": "SEVERE", "Cyclosporine": "SEVERE", "Rifampin": "SEVERE",
+                      "Phenytoin": "MAJOR", "Grapefruit": "MAJOR"},
+        hepatic_adjust=True, route="IV", metabolism="hepatic_CYP3A4", excretion="biliary"
+    ),
+    "Cyclosporine": DrugProfile(
+        name="Cyclosporine", category="immunosuppressant", bioavailability=0.30,
+        onset_min=60.0, peak_min=240.0, half_life_min=1140.0, duration_min=1440.0,
+        standard_dose=3.0, dose_unit="mg/kg", max_dose=5.0, min_dose=1.0, toxic_dose=10.0,
+        contraindications=["uncontrolled_hypertension", "renal_impairment"],
+        interactions={"Ketoconazole": "SEVERE", "Rifampin": "SEVERE", "Statins": "MAJOR",
+                      "ACE_inhibitors": "MAJOR", "Methotrexate": "MAJOR"},
+        renal_adjust=True, route="IV", metabolism="hepatic_CYP3A4", excretion="biliary"
+    ),
+    "Methotrexate": DrugProfile(
+        name="Methotrexate", category="antimetabolite", bioavailability=0.60,
+        onset_min=60.0, peak_min=180.0, half_life_min=480.0, duration_min=1440.0,
+        standard_dose=15.0, dose_unit="mg", max_dose=25.0, min_dose=7.5, toxic_dose=50.0,
+        contraindications=["pregnancy", "severe_renal_impairment", "hepatic_insufficiency"],
+        interactions={"NSAIDs": "SEVERE", "TMP_SMX": "SEVERE", "Penicillins": "MAJOR"},
+        renal_adjust=True, route="PO", metabolism="hepatic", excretion="renal"
+    ),
+    "Lithium": DrugProfile(
+        name="Lithium", category="mood_stabilizer", bioavailability=0.95,
+        onset_min=360.0, peak_min=720.0, half_life_min=1440.0, duration_min=1440.0,
+        standard_dose=300.0, dose_unit="mg", max_dose=1800.0, min_dose=150.0, toxic_dose=3600.0,
+        contraindications=["severe_renal_impairment", "severe_cardiovascular_disease"],
+        interactions={"ACE_inhibitors": "MAJOR", "NSAIDs": "MAJOR", "Thiazides": "MAJOR",
+                      "Metronidazole": "MAJOR"},
+        renal_adjust=True, route="PO", metabolism="none", excretion="renal"
+    ),
+    "Furosemide": DrugProfile(
+        name="Furosemide", category="loop_diuretic", bioavailability=0.50,
+        onset_min=5.0, peak_min=30.0, half_life_min=90.0, duration_min=120.0,
+        standard_dose=40.0, dose_unit="mg", max_dose=200.0, min_dose=20.0, toxic_dose=600.0,
+        contraindications=["anuria", "severe_hypokalemia"],
+        interactions={"Aminoglycosides": "MAJOR", "Digoxin": "MAJOR", "Lithium": "MAJOR",
+                      "ACE_inhibitors": "MODERATE"},
+        renal_adjust=True, route="IV", metabolism="hepatic", excretion="renal"
+    ),
+    "Spironolactone": DrugProfile(
+        name="Spironolactone", category="potassium_sparing_diuretic", bioavailability=0.73,
+        onset_min=2880.0, peak_min=4320.0, half_life_min=84.0, duration_min=2880.0,
+        standard_dose=25.0, dose_unit="mg", max_dose=100.0, min_dose=12.5, toxic_dose=400.0,
+        contraindications=["hyperkalemia", "Addison_disease", "anuria"],
+        interactions={"ACE_inhibitors": "MAJOR", "ARBs": "MAJOR", "Potassium_supplements": "SEVERE",
+                      "Digoxin": "MODERATE"},
+        renal_adjust=True, route="PO", metabolism="hepatic", excretion="renal/fecal"
     ),
 }
 

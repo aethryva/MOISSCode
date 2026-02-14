@@ -119,7 +119,207 @@ COMPOUND_DATABASE: Dict[str, Compound] = {
         known_targets=["Insulin receptor"], therapeutic_class="antidiabetic",
         max_daily_dose_mg=100, ld50_mg_kg=0
     ),
+
+    # ─── v3.0 Expansion ──────────────────────────────────
+    "vancomycin": Compound(
+        name="Vancomycin", formula="C66H75Cl2N9O24", molecular_weight=1449.25,
+        logp=-3.1, hbd=19, hba=31, psa=530.5, rotatable_bonds=7,
+        category="glycopeptide", solubility="high", permeability="low",
+        known_targets=["D-Ala-D-Ala terminus"], therapeutic_class="antibiotic",
+        max_daily_dose_mg=4000, ld50_mg_kg=5000
+    ),
+    "meropenem": Compound(
+        name="Meropenem", formula="C17H25N3O5S", molecular_weight=383.46,
+        logp=-0.6, hbd=2, hba=7, psa=109.0, rotatable_bonds=5,
+        category="carbapenem", solubility="high", permeability="high",
+        known_targets=["PBP2", "PBP3"], therapeutic_class="antibiotic",
+        max_daily_dose_mg=6000, ld50_mg_kg=2000
+    ),
+    "fluconazole": Compound(
+        name="Fluconazole", formula="C13H12F2N6O", molecular_weight=306.27,
+        logp=0.4, hbd=1, hba=7, psa=81.7, rotatable_bonds=5,
+        category="triazole", solubility="high", permeability="high",
+        known_targets=["14-alpha demethylase"], therapeutic_class="antifungal",
+        max_daily_dose_mg=400, ld50_mg_kg=1000
+    ),
+    "remdesivir": Compound(
+        name="Remdesivir", formula="C27H35N6O8P", molecular_weight=602.58,
+        logp=1.9, hbd=3, hba=12, psa=213.4, rotatable_bonds=14,
+        category="nucleotide analog", solubility="low", permeability="moderate",
+        known_targets=["RdRp (RNA-dependent RNA polymerase)"], therapeutic_class="antiviral",
+        max_daily_dose_mg=200, ld50_mg_kg=0
+    ),
+    "tacrolimus": Compound(
+        name="Tacrolimus", formula="C44H69NO12", molecular_weight=804.02,
+        logp=3.3, hbd=3, hba=12, psa=178.4, rotatable_bonds=7,
+        category="macrolide", solubility="low", permeability="high",
+        known_targets=["FKBP12", "Calcineurin"], therapeutic_class="immunosuppressant",
+        max_daily_dose_mg=20, ld50_mg_kg=134
+    ),
+    "cyclosporine": Compound(
+        name="Cyclosporine", formula="C62H111N11O12", molecular_weight=1202.61,
+        logp=2.9, hbd=5, hba=12, psa=279.0, rotatable_bonds=15,
+        category="cyclic peptide", solubility="low", permeability="high",
+        known_targets=["Cyclophilin", "Calcineurin"], therapeutic_class="immunosuppressant",
+        max_daily_dose_mg=500, ld50_mg_kg=2329
+    ),
+    "lisinopril": Compound(
+        name="Lisinopril", formula="C21H31N3O5", molecular_weight=405.49,
+        logp=-1.22, hbd=4, hba=7, psa=132.7, rotatable_bonds=12,
+        category="ACE inhibitor", solubility="high", permeability="low",
+        known_targets=["ACE"], therapeutic_class="antihypertensive",
+        max_daily_dose_mg=80, ld50_mg_kg=2000
+    ),
+    "losartan": Compound(
+        name="Losartan", formula="C22H23ClN6O", molecular_weight=422.91,
+        logp=4.01, hbd=2, hba=5, psa=92.5, rotatable_bonds=8,
+        category="ARB", solubility="moderate", permeability="high",
+        known_targets=["AT1 receptor"], therapeutic_class="antihypertensive",
+        max_daily_dose_mg=100, ld50_mg_kg=1000
+    ),
+    "amlodipine": Compound(
+        name="Amlodipine", formula="C20H25ClN2O5", molecular_weight=408.88,
+        logp=3.0, hbd=2, hba=6, psa=100.0, rotatable_bonds=10,
+        category="dihydropyridine", solubility="moderate", permeability="high",
+        known_targets=["L-type Ca2+ channel"], therapeutic_class="antihypertensive",
+        max_daily_dose_mg=10, ld50_mg_kg=0
+    ),
+    "atorvastatin": Compound(
+        name="Atorvastatin", formula="C33H35FN2O5", molecular_weight=558.64,
+        logp=6.36, hbd=4, hba=5, psa=111.8, rotatable_bonds=12,
+        category="statin", solubility="low", permeability="high",
+        known_targets=["HMG-CoA reductase"], therapeutic_class="lipid-lowering",
+        max_daily_dose_mg=80, ld50_mg_kg=0
+    ),
+    "furosemide": Compound(
+        name="Furosemide", formula="C12H11ClN2O5S", molecular_weight=330.74,
+        logp=2.03, hbd=3, hba=7, psa=122.6, rotatable_bonds=5,
+        category="sulfonamide loop diuretic", solubility="moderate", permeability="moderate",
+        known_targets=["NKCC2 transporter"], therapeutic_class="diuretic",
+        max_daily_dose_mg=600, ld50_mg_kg=2600
+    ),
+    "methotrexate": Compound(
+        name="Methotrexate", formula="C20H22N8O5", molecular_weight=454.44,
+        logp=-1.85, hbd=5, hba=12, psa=210.5, rotatable_bonds=10,
+        category="antimetabolite", solubility="moderate", permeability="low",
+        known_targets=["Dihydrofolate reductase"], therapeutic_class="antineoplastic",
+        max_daily_dose_mg=25, ld50_mg_kg=135
+    ),
+    "imatinib": Compound(
+        name="Imatinib", formula="C29H31N7O", molecular_weight=493.60,
+        logp=3.5, hbd=2, hba=7, psa=86.3, rotatable_bonds=7,
+        category="tyrosine kinase inhibitor", solubility="moderate", permeability="high",
+        known_targets=["BCR-ABL", "c-KIT", "PDGFR"], therapeutic_class="antineoplastic",
+        max_daily_dose_mg=800, ld50_mg_kg=0
+    ),
+    "doxorubicin": Compound(
+        name="Doxorubicin", formula="C27H29NO11", molecular_weight=543.52,
+        logp=1.27, hbd=6, hba=12, psa=206.1, rotatable_bonds=5,
+        category="anthracycline", solubility="moderate", permeability="low",
+        known_targets=["Topoisomerase II", "DNA intercalation"], therapeutic_class="antineoplastic",
+        max_daily_dose_mg=75, ld50_mg_kg=25
+    ),
+    "lithium_carbonate": Compound(
+        name="Lithium Carbonate", formula="Li2CO3", molecular_weight=73.89,
+        logp=-2.0, hbd=0, hba=3, psa=63.2, rotatable_bonds=0,
+        category="alkali metal salt", solubility="high", permeability="high",
+        known_targets=["GSK-3β", "IMPase"], therapeutic_class="mood stabilizer",
+        max_daily_dose_mg=1800, ld50_mg_kg=531
+    ),
+    "valproic_acid": Compound(
+        name="Valproic Acid", formula="C8H16O2", molecular_weight=144.21,
+        logp=2.78, hbd=1, hba=2, psa=37.3, rotatable_bonds=5,
+        category="branched chain fatty acid", solubility="moderate", permeability="high",
+        known_targets=["GABA transaminase", "Voltage-gated Na+ channels", "HDAC"], therapeutic_class="anticonvulsant",
+        max_daily_dose_mg=3000, ld50_mg_kg=670
+    ),
+    "fluoxetine": Compound(
+        name="Fluoxetine", formula="C17H18F3NO", molecular_weight=309.33,
+        logp=4.05, hbd=1, hba=2, psa=21.3, rotatable_bonds=6,
+        category="SSRI", solubility="moderate", permeability="high",
+        known_targets=["SERT (serotonin transporter)"], therapeutic_class="antidepressant",
+        max_daily_dose_mg=80, ld50_mg_kg=452
+    ),
+    "levetiracetam": Compound(
+        name="Levetiracetam", formula="C8H14N2O2", molecular_weight=170.21,
+        logp=-0.64, hbd=1, hba=3, psa=63.4, rotatable_bonds=3,
+        category="pyrrolidone", solubility="high", permeability="high",
+        known_targets=["SV2A"], therapeutic_class="anticonvulsant",
+        max_daily_dose_mg=3000, ld50_mg_kg=0
+    ),
+    "albuterol": Compound(
+        name="Albuterol", formula="C13H21NO3", molecular_weight=239.31,
+        logp=0.64, hbd=4, hba=4, psa=72.7, rotatable_bonds=4,
+        category="phenethylamine", solubility="high", permeability="high",
+        known_targets=["β2-adrenergic receptor"], therapeutic_class="bronchodilator",
+        max_daily_dose_mg=32, ld50_mg_kg=0
+    ),
+    "ipratropium": Compound(
+        name="Ipratropium", formula="C20H30NO3", molecular_weight=332.46,
+        logp=-0.8, hbd=1, hba=4, psa=46.5, rotatable_bonds=5,
+        category="tropane alkaloid", solubility="high", permeability="low",
+        known_targets=["M1-M3 muscarinic receptors"], therapeutic_class="bronchodilator",
+        max_daily_dose_mg=2, ld50_mg_kg=0
+    ),
+    "empagliflozin": Compound(
+        name="Empagliflozin", formula="C23H27ClO7", molecular_weight=450.91,
+        logp=1.6, hbd=4, hba=6, psa=108.0, rotatable_bonds=6,
+        category="glucoside", solubility="moderate", permeability="high",
+        known_targets=["SGLT2"], therapeutic_class="antidiabetic",
+        max_daily_dose_mg=25, ld50_mg_kg=0
+    ),
+    "clopidogrel": Compound(
+        name="Clopidogrel", formula="C16H16ClNO2S", molecular_weight=321.82,
+        logp=3.37, hbd=0, hba=3, psa=56.6, rotatable_bonds=5,
+        category="thienopyridine", solubility="low", permeability="high",
+        known_targets=["P2Y12 ADP receptor (active metabolite)"], therapeutic_class="antiplatelet",
+        max_daily_dose_mg=75, ld50_mg_kg=0
+    ),
+    "apixaban": Compound(
+        name="Apixaban", formula="C25H25N5O4", molecular_weight=459.50,
+        logp=1.88, hbd=1, hba=7, psa=110.8, rotatable_bonds=5,
+        category="pyrazole", solubility="low", permeability="high",
+        known_targets=["Factor Xa"], therapeutic_class="anticoagulant",
+        max_daily_dose_mg=10, ld50_mg_kg=0
+    ),
+    "heparin_lmwh": Compound(
+        name="Enoxaparin (LMWH)", formula="C26H42N2O37S5",
+        molecular_weight=4500.0, logp=-4.0, hbd=20, hba=40,
+        psa=800, rotatable_bonds=30,
+        category="glycosaminoglycan", solubility="high", permeability="low",
+        known_targets=["Antithrombin III", "Factor Xa"], therapeutic_class="anticoagulant",
+        max_daily_dose_mg=300, ld50_mg_kg=0
+    ),
+    "naloxone": Compound(
+        name="Naloxone", formula="C19H21NO4", molecular_weight=327.37,
+        logp=2.09, hbd=2, hba=5, psa=70.0, rotatable_bonds=2,
+        category="morphinan", solubility="moderate", permeability="high",
+        known_targets=["mu-opioid receptor (antagonist)"], therapeutic_class="opioid antagonist",
+        max_daily_dose_mg=10, ld50_mg_kg=150
+    ),
+    "epinephrine": Compound(
+        name="Epinephrine", formula="C9H13NO3", molecular_weight=183.21,
+        logp=-1.37, hbd=4, hba=4, psa=72.7, rotatable_bonds=2,
+        category="catecholamine", solubility="high", permeability="low",
+        known_targets=["α1", "α2", "β1", "β2 adrenergic receptors"], therapeutic_class="vasopressor",
+        max_daily_dose_mg=10, ld50_mg_kg=30
+    ),
+    "adenosine_compound": Compound(
+        name="Adenosine", formula="C10H13N5O4", molecular_weight=267.24,
+        logp=-1.05, hbd=4, hba=8, psa=139.5, rotatable_bonds=2,
+        category="purine nucleoside", solubility="high", permeability="moderate",
+        known_targets=["A1 receptor", "AV node"], therapeutic_class="antiarrhythmic",
+        max_daily_dose_mg=12, ld50_mg_kg=0
+    ),
+    "oseltamivir": Compound(
+        name="Oseltamivir", formula="C16H28N2O4", molecular_weight=312.40,
+        logp=1.0, hbd=2, hba=5, psa=90.7, rotatable_bonds=8,
+        category="neuraminidase inhibitor", solubility="high", permeability="high",
+        known_targets=["Neuraminidase (influenza)"], therapeutic_class="antiviral",
+        max_daily_dose_mg=150, ld50_mg_kg=0
+    ),
 }
+
 
 
 # ── Atomic Weights ─────────────────────────────────────

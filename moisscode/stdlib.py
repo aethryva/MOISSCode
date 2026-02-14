@@ -21,6 +21,7 @@ from .modules.med_glucose import GlucoseEngine
 from .modules.med_chem import ChemEngine
 from .modules.med_signal import SignalEngine
 from .modules.med_icd import ICDEngine
+from .modules.med_papers import PapersEngine
 
 class KAE_Estimator:
     """Kalman-Autoencoder Estimator from the KAE Framework paper."""
@@ -83,7 +84,7 @@ class MOISS_Classifier:
             return "TOO_LATE"
 
 class StandardLibrary:
-    """MOISSCode Medical Library - all 19 modules."""
+    """MOISSCode Medical Library - all 20 modules."""
 
     def __init__(self):
         self.pk = PharmacokineticEngine()
@@ -105,3 +106,4 @@ class StandardLibrary:
         self.chem = ChemEngine()
         self.signal = SignalEngine()
         self.icd = ICDEngine()
+        self.papers = PapersEngine()
