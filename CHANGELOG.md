@@ -4,6 +4,32 @@ All notable changes to MOISSCode are documented here. This project follows [Sema
 
 ---
 
+## [3.0.0] - 2026-02-14
+
+### Module Expansion
+
+- **med.pk** — Expanded from 16 to 100+ drug profiles across 11 therapeutic categories (antibiotics, cardiovascular, analgesics, anticoagulants, neuropsych, GI/endocrine, respiratory, emergency, antidiabetics, antivirals, immunosuppressants)
+- **med.lab** — Expanded from 44 to 80+ lab tests across 15 panels (added lipid, iron studies, tumor markers, urine, immunology, endocrine, coagulation)
+- **med.micro** — Expanded from 10 to 30 organisms and 5 to 15 empiric therapy protocols
+- **med.biochem** — Expanded from 8 to 25 enzymes and 4 to 8 metabolic pathways
+- **med.icd** — Expanded from 28 to 94 ICD-10-CM codes and 8 to 25 DRG groups (added neuro, psych, heme, onc, MSK, OB, injury)
+- **med.genomics** — Expanded from 4 to 8 CYP450 genes and 7 to 20 pharmacogenomic dosing guidelines
+- **med.chem** — Expanded from 12 to 40 compound profiles across 8 therapeutic categories
+- **med.finance** — Expanded from 5 to 38 CPT codes (critical care, E&M, ED, lab, imaging, procedures)
+
+### Added: New Module
+
+- **med.papers** — Scientific paper generator
+  - Generate publishing-ready LaTeX documents in 8 journal formats: IEEE, medRxiv, bioRxiv, JAMA, Nature, Lancet, PLOS ONE, generic
+  - Structured sections, figures, tables, and BibTeX references
+  - PDF compilation via `pdflatex`
+
+### Changed
+- Version bumped to 3.0.0
+- StandardLibrary now registers 20 modules
+
+---
+
 ## [2.0.0] - 2026-02-13
 
 ### 4 new modules, 4 expanded modules.
