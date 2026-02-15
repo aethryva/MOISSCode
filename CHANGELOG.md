@@ -4,6 +4,24 @@ All notable changes to MOISSCode are documented here. This project follows [Sema
 
 ---
 
+## [3.0.1] - 2026-02-15
+
+### Testing
+- Test suite expanded from 108 to 234 tests across 11 new test files
+- Full coverage for: med.glucose, med.micro, med.epi, med.biochem, med.nutrition, med.finance, med.fhir, med.icd, med.chem, med.signal, StandardLibrary integration
+- CI runs green on Python 3.10, 3.11, and 3.12
+
+### Security
+- API error responses no longer leak Python tracebacks to clients
+- Dockerfile hardened: non-root user, health check, multi-worker uvicorn
+
+### Fixed
+- `pyproject.toml` section ordering that broke `pip install` in CI
+- `datetime.utcnow()` deprecation warnings in FHIR module (29 warnings → 0)
+- PEP 561 `py.typed` marker included in package data
+
+---
+
 ## [3.0.0] - 2026-02-14
 
 ### Module Expansion

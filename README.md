@@ -3,10 +3,10 @@
   <br/>
   <strong>Multi Organ Intervention State Space Code</strong>
   <br/>
-  <a href="https://github.com/aethryva/MOISSCode/actions/workflows/tests.yml"><img src="https://github.com/aethryva/MOISSCode/actions/workflows/tests.yml/badge.svg" alt="Tests" /></a>
+  <a href="https://github.com/aethryva/MOISSCode/actions/workflows/tests.yml"><img src="https://github.com/aethryva/MOISSCode/actions/workflows/tests.yml/badge.svg?branch=main" alt="Tests" /></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white" alt="Python 3.10+" />
   <img src="https://img.shields.io/badge/license-BSL%201.1-green" alt="BSL 1.1" />
-  <img src="https://img.shields.io/badge/version-3.0.0-red" alt="v3.0.0" />
+  <img src="https://img.shields.io/badge/version-3.0.1-red" alt="v3.0.1" />
 
   <p align="center">A domain-specific language for clinical decision support and biotech workflow automation.</p>
   <p align="center">

@@ -2,7 +2,7 @@
 
 MAJOR = 3
 MINOR = 0
-PATCH = 0
+PATCH = 1
 LABEL = ""
 
 __version__ = f"{MAJOR}.{MINOR}.{PATCH}" if not LABEL else f"{MAJOR}.{MINOR}.{PATCH}-{LABEL}"
