@@ -1234,7 +1234,16 @@ class PharmacokineticEngine:
         """Calculate weight-based dose for a drug."""
         profile = self.get_profile(drug_name)
         if not profile:
-            return {"error": f"Unknown drug: {drug_name}"}
+            # Suggest similar drug names
+            name_lower = drug_name.lower()
+            suggestions = [d for d in self.drugs
+                           if name_lower in d.lower() or d.lower() in name_lower
+                           or (len(name_lower) >= 3 and name_lower[:3] == d.lower()[:3])]
+            msg = f"Drug '{drug_name}' not found in registry."
+            if suggestions:
+                msg += f" Did you mean: {', '.join(suggestions[:3])}?"
+            msg += f" Use list_drugs() to see all {len(self.drugs)} available drugs."
+            return {"error": msg}
 
         if dose_per_kg is None:
             dose_per_kg = profile.standard_dose

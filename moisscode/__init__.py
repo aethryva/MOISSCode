@@ -25,6 +25,16 @@ from moisscode.parser import MOISSCodeParser
 from moisscode.interpreter import MOISSCodeInterpreter
 from moisscode.typesystem import Patient, TypeChecker
 from moisscode.stdlib import StandardLibrary
+from moisscode.exceptions import (
+    MOISSCodeError,
+    DrugNotFoundError,
+    DoseValidationError,
+    LabTestNotFoundError,
+    PatientFieldError,
+    OrganismNotFoundError,
+    ICDCodeError,
+    FHIRValidationError,
+)
 
 # Re-export module classes for convenience
 from moisscode.modules import (

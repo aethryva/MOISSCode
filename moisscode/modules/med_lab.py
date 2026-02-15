@@ -157,7 +157,16 @@ class LabEngine:
         """Interpret a single lab result against reference ranges."""
         ref = self.references.get(test_name)
         if not ref:
-            return {"error": f"Unknown test: {test_name}. Use list_tests() to see available tests."}
+            # Find similar test names for suggestions
+            name_lower = test_name.lower()
+            suggestions = [t for t in self.references
+                           if name_lower in t.lower() or t.lower() in name_lower
+                           or (len(name_lower) >= 3 and name_lower[:3] == t.lower()[:3])]
+            msg = f"Lab test '{test_name}' not found."
+            if suggestions:
+                msg += f" Did you mean: {', '.join(suggestions[:5])}?"
+            msg += " Use list_tests() to see all available tests."
+            return {"error": msg}
 
         # Determine status
         if ref.panic_low and value <= ref.panic_low:

@@ -33,6 +33,17 @@ class KAE_Estimator:
         self.dt = 5.0  # minutes
 
     def update(self, measurement, reliability=1.0):
+        """Update the Kalman filter state with a new biomarker measurement.
+
+        Args:
+            measurement: Raw biomarker value.
+            reliability: Sensor reliability factor (0 to 1). Lower values
+                increase measurement noise, giving more weight to prediction.
+
+        Returns:
+            dict: Updated state with 'pos' (estimated value) and 'vel'
+                (estimated rate of change).
+        """
         if reliability < 0.0001: reliability = 0.0001
         R = self.R0 / reliability
 
@@ -65,6 +76,19 @@ class MOISS_Classifier:
         self.pk = pk_engine or PharmacokineticEngine()
 
     def classify(self, t_crit_min: float, drug_name: str) -> str:
+        """Classify intervention timing relative to drug onset.
+
+        Uses the MOISS collision geometry framework to categorize
+        how timely a therapeutic intervention is.
+
+        Args:
+            t_crit_min: Time remaining until critical threshold (minutes).
+            drug_name: Name of the drug being administered.
+
+        Returns:
+            Classification string: PROPHYLACTIC, ON_TIME, PARTIAL,
+                MARGINAL, FUTILE, or TOO_LATE.
+        """
         profile = self.pk.get_profile(drug_name)
         t_effect = profile.onset_min if profile else 30.0
 

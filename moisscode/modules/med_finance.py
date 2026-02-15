@@ -106,7 +106,9 @@ class FinancialSystem:
         }
 
     def get_total(self) -> float:
+        """Return the running total of all billed items."""
         return self.current_total
 
     def get_ledger(self) -> List[Dict[str, Any]]:
+        """Return the full billing ledger as a list of entries."""
         return self.ledger
