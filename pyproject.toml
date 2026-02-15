@@ -13,6 +13,12 @@ authors = [
     {name = "Aethryva Deeptech"}
 ]
 keywords = ["medical", "dsl", "clinical", "biotech", "pharmacokinetics", "FHIR"]
+
+[project.urls]
+Homepage = "https://moisscode.com"
+Repository = "https://github.com/aethryva/MOISSCode"
+Documentation = "https://moisscode.com/docs/getting-started"
+Issues = "https://github.com/aethryva/MOISSCode/issues"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Healthcare Industry",
@@ -36,3 +42,6 @@ version = {attr = "moisscode.version.__version__"}
 
 [tool.setuptools.packages.find]
 include = ["moisscode*"]
+
+[tool.setuptools.package-data]
+moisscode = ["py.typed"]
