@@ -6,7 +6,7 @@ exchanges, and clinical data warehouses.
 """
 
 from typing import Any, Dict, List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 
@@ -44,7 +44,7 @@ class FHIRBridge:
         return {
             'resourceType': 'Bundle',
             'type': 'collection',
-            'timestamp': datetime.utcnow().isoformat() + 'Z',
+            'timestamp': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'entry': entries
         }
 
@@ -93,7 +93,7 @@ class FHIRBridge:
                         'unit': loinc['unit'],
                         'system': 'http://unitsofmeasure.org'
                     },
-                    'effectiveDateTime': datetime.utcnow().isoformat() + 'Z'
+                    'effectiveDateTime': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
                 })
         return observations
 
@@ -169,7 +169,7 @@ class FHIRBridge:
                     }
                 }]
             }],
-            'authoredOn': datetime.utcnow().isoformat() + 'Z'
+            'authoredOn': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         }
 
     # ─── Condition Builder ─────────────────────────────────────
@@ -204,7 +204,7 @@ class FHIRBridge:
             'subject': {
                 'reference': f"Patient/{patient_id}"
             },
-            'recordedDate': datetime.utcnow().isoformat() + 'Z'
+            'recordedDate': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         }
 
     # ─── Utility ───────────────────────────────────────────────
