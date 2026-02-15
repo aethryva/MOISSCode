@@ -1,5 +1,5 @@
 ﻿<p align="center">
-  <img src="assets/moisscode_logo.png" alt="MOISSCode" width="360" />
+  <img src="https://raw.githubusercontent.com/aethryva/MOISSCode/main/assets/moisscode_logo.png" alt="MOISSCode" width="360" />
   <br/>
   <strong>Multi Organ Intervention State Space Code</strong>
   <br/>
